@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retro Emulator - NES & GBA</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>🎮 Retro Emulator</h1>
+    
+    <div id="fileProtocolWarning" style="display:none; background: #ff4444; color: white; padding: 15px; border-radius: 10px; margin-bottom: 20px; text-align: center;">
+        <strong>⚠ WARNING:</strong> You're opening this file directly (file://).<br>
+        Please use a web server instead:<br>
+        <code style="background: rgba(0,0,0,0.3); padding: 5px 10px; border-radius: 5px; display: inline-block; margin: 10px 0;">
+            python -m http.server 8000
+        </code><br>
+        Then open: <code style="background: rgba(0,0,0,0.3); padding: 5px 10px; border-radius: 5px;">http://localhost:8000</code>
+    </div>
+    
+    <div class="controls">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
+            <div style="flex: 1; min-width: 200px;">
+                <label for="systemSelect"><strong>Select System:</strong></label><br>
+                <select id="systemSelect">
+                    <option value="nes">Nintendo (NES)</option>
+                    <option value="gba">Game Boy Advance (GBA)</option>
+                </select>
+            </div>
+            <button id="controlSettingsBtn" class="settings-btn">
+                ⚙️ Configure Controls
+            </button>
+        </div>
+        <input type="file" id="romFile" accept=".nes,.gba">
+        <div id="status">Select a system and load a ROM file to start</div>
+        <div id="debug" class="debug"></div>
+    </div>
+
+    <!-- Control Settings Modal -->
+    <div id="controlModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🎮 Configure Controls</h2>
+                <button class="close-btn" id="closeModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="control-group">
+                    <label>Select System:</label>
+                    <select id="controlSystemSelect">
+                        <option value="nes">NES</option>
+                        <option value="gba">GBA</option>
+                    </select>
+                </div>
+                <div id="controlMapping" class="control-mapping">
+                    <!-- Controls will be generated here -->
+                </div>
+                <div class="modal-actions">
+                    <button id="resetControls" class="btn-secondary">Reset to Default</button>
+                    <button id="saveControls" class="btn-primary">Save Controls</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="screen">
+        <canvas id="canvas" width="256" height="240"></canvas>
+        <div id="game-container" style="display:none;"></div>
+    </div>
+
+    <div class="info">
+        <strong>🎮 Controls</strong>
+        <div style="margin-top: 15px; line-height: 1.8;">
+            <div style="margin-bottom: 12px;">
+                <strong style="color: #8b5cf6;">NES:</strong> 
+                <span style="color: var(--text-secondary);">
+                    Arrows/WASD = D-Pad | Z/J/N = A | X/K/M = B | Enter/Space = Start | Shift/C = Select
+                </span>
+            </div>
+            <div>
+                <strong style="color: #8b5cf6;">GBA:</strong> 
+                <span style="color: var(--text-secondary);">
+                    Arrows/WASD = D-Pad | Z/J/N = A | X/K/M = B | Q = L | E = R | Enter/Space = Start | Shift/C = Select
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load jsNES library for NES emulation -->
+    <script src="https://unpkg.com/jsnes@1.2.1/dist/jsnes.min.js"></script>
+    
+    <!-- Load our modules -->
+    <script src="emulator.js"></script>
+    <script src="controls.js"></script>
+    <script src="controlSettings.js"></script>
+    
+    <!-- Main application -->
+    <script src="main.js"></script>
+</body>
+</html>
