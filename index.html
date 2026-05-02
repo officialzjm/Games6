@@ -7,40 +7,91 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>🎮 Retro Emulator</h1>
-    
-    <div id="fileProtocolWarning" style="display:none; background: #ff4444; color: white; padding: 15px; border-radius: 10px; margin-bottom: 20px; text-align: center;">
-        <strong>⚠ WARNING:</strong> You're opening this file directly (file://).<br>
-        Please use a web server instead:<br>
-        <code style="background: rgba(0,0,0,0.3); padding: 5px 10px; border-radius: 5px; display: inline-block; margin: 10px 0;">
-            python -m http.server 8000
-        </code><br>
-        Then open: <code style="background: rgba(0,0,0,0.3); padding: 5px 10px; border-radius: 5px;">http://localhost:8000</code>
-    </div>
-    
-    <div class="controls">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
-            <div style="flex: 1; min-width: 200px;">
-                <label for="systemSelect"><strong>Select System:</strong></label><br>
-                <select id="systemSelect">
-                    <option value="nes">Nintendo (NES)</option>
-                    <option value="gba">Game Boy Advance (GBA)</option>
-                </select>
-            </div>
-            <button id="controlSettingsBtn" class="settings-btn">
-                ⚙️ Configure Controls
-            </button>
+    <main class="app-shell">
+        <header class="app-header">
+            <p class="eyebrow">Browser Emulator</p>
+            <h1>Retro Emulator</h1>
+            <p class="app-subtitle">A cleaner local setup for running NES and GBA ROMs directly in the browser.</p>
+        </header>
+
+        <div id="fileProtocolWarning" class="warning-banner" style="display:none;">
+            <strong>WARNING:</strong> You're opening this file directly (`file://`).<br>
+            Please use a web server instead:<br>
+            <code>python -m http.server 8000</code><br>
+            Then open: <code>http://localhost:8000</code>
         </div>
-        <input type="file" id="romFile" accept=".nes,.gba">
-        <div id="status">Select a system and load a ROM file to start</div>
-        <div id="debug" class="debug"></div>
-    </div>
+
+        <section class="workspace">
+            <div class="controls panel">
+                <div class="controls-top">
+                    <div class="field-group">
+                        <label for="systemSelect">Select System</label>
+                        <p class="field-note">Choose an emulator core before loading a ROM.</p>
+                    </div>
+                    <button id="controlSettingsBtn" class="settings-btn">
+                        Configure Controls
+                    </button>
+                </div>
+                <div class="controls-row">
+                    <div class="field-group field-grow">
+                        <label for="systemSelect">System</label>
+                        <div class="select-wrap">
+                            <select id="systemSelect">
+                                <option value="nes">Nintendo (NES)</option>
+                                <option value="gba">Game Boy Advance (GBA)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="field-group field-grow">
+                        <label for="romFile">ROM File</label>
+                        <input type="file" id="romFile" accept=".nes,.gba">
+                    </div>
+                </div>
+                <div id="status">Select a system and load a ROM file to start</div>
+                <div id="debug" class="debug"></div>
+            </div>
+
+            <div class="stage-panel panel">
+                <div class="stage-header">
+                    <div>
+                        <p class="eyebrow">Display</p>
+                        <h2>Game Screen</h2>
+                    </div>
+                    <span class="stage-badge">Local Runtime</span>
+                </div>
+                <div id="screen">
+                    <canvas id="canvas" width="256" height="240"></canvas>
+                    <div id="game-container" style="display:none;"></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="info-grid">
+            <div class="info panel">
+                <strong>Supported Systems</strong>
+                <p>Use NES for the most stable experience. GBA is available for testing and development-oriented previews.</p>
+            </div>
+            <div class="info panel">
+                <strong>Controls</strong>
+                <div class="control-summary">
+                    <div class="control-summary-item">
+                        <span class="system-chip">NES</span>
+                        <p>Arrows or WASD for movement, Z or J or N for A, X or K or M for B, Enter or Space for Start, Shift or C for Select.</p>
+                    </div>
+                    <div class="control-summary-item">
+                        <span class="system-chip">GBA</span>
+                        <p>Same base layout as NES, plus Q for L and E for R.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
 
     <!-- Control Settings Modal -->
     <div id="controlModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>🎮 Configure Controls</h2>
+                <h2>Configure Controls</h2>
                 <button class="close-btn" id="closeModal">&times;</button>
             </div>
             <div class="modal-body">
@@ -58,29 +109,6 @@
                     <button id="resetControls" class="btn-secondary">Reset to Default</button>
                     <button id="saveControls" class="btn-primary">Save Controls</button>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="screen">
-        <canvas id="canvas" width="256" height="240"></canvas>
-        <div id="game-container" style="display:none;"></div>
-    </div>
-
-    <div class="info">
-        <strong>🎮 Controls</strong>
-        <div style="margin-top: 15px; line-height: 1.8;">
-            <div style="margin-bottom: 12px;">
-                <strong style="color: #8b5cf6;">NES:</strong> 
-                <span style="color: var(--text-secondary);">
-                    Arrows/WASD = D-Pad | Z/J/N = A | X/K/M = B | Enter/Space = Start | Shift/C = Select
-                </span>
-            </div>
-            <div>
-                <strong style="color: #8b5cf6;">GBA:</strong> 
-                <span style="color: var(--text-secondary);">
-                    Arrows/WASD = D-Pad | Z/J/N = A | X/K/M = B | Q = L | E = R | Enter/Space = Start | Shift/C = Select
-                </span>
             </div>
         </div>
     </div>

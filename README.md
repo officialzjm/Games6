@@ -9,7 +9,7 @@ A modern, browser-based retro gaming emulator that runs classic Nintendo games e
 
 ![NES Emulator Screenshot](screenshot.png)
 
-*NES emulator running in the browser with the modern dark theme interface*
+*NES emulator running in the browser with the refreshed console-style interface*
 
 ## ✨ Features
 
@@ -17,7 +17,7 @@ A modern, browser-based retro gaming emulator that runs classic Nintendo games e
 - 🎮 **GBA Emulation** - Game Boy Advance support (WebAssembly-based)
 - ⌨️ **Customizable Controls** - Remap keys to your preference with the built-in control configurator
 - 💾 **Persistent Settings** - Your control mappings are saved automatically
-- 🎨 **Modern UI** - Beautiful, responsive design with dark theme
+- 🎨 **Console-Inspired UI** - Cleaner flat interface with a focused local-runtime workspace
 - 📱 **Responsive Design** - Works on desktop, tablet, and mobile devices
 - 🚀 **No Installation Required** - Runs entirely in your browser
 
@@ -69,12 +69,18 @@ A modern, browser-based retro gaming emulator that runs classic Nintendo games e
    - Click "Choose File" and select your ROM file
    - Start playing!
 
+### Recommended Sample ROM
+
+For safe demos and screenshots, use a legal homebrew NES ROM rather than copyrighted commercial games.
+
+- `Spacegulls (NES)` by Morphcat Games: https://morphcatgames.itch.io/spacegulls
+
 ## 📁 Project Structure
 
 ```
 retro-emulator/
 ├── index.html              # Main HTML structure
-├── style.css                # Modern styling and layout
+├── style.css               # Console-style layout and visual system
 ├── main.js                  # Application entry point
 ├── emulator.js              # Emulator core logic
 ├── controls.js              # Input handling system
@@ -193,7 +199,7 @@ The GBA emulator requires mGBA compiled to WebAssembly. The emulator will:
 
 ### Controls not working
 - Click on the game screen to ensure focus
-- Open the control settings (⚙️ button) and verify your key mappings
+- Open the control settings button and verify your key mappings
 - Try refreshing the page
 
 ### Game runs slowly
