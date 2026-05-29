@@ -2,7 +2,11 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <meta name="theme-color" content="#0f1113">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Retro Emulator - NES & GBA</title>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -14,6 +18,13 @@
             <p class="app-subtitle hide-on-mobile">A cleaner local setup for running NES and GBA ROMs directly in the browser.</p>
         </header>
 
+        <!-- Fullscreen recommendation hint (shown on touch devices, dismissable) -->
+        <div id="fullscreenHint" class="fullscreen-hint" style="display:none;">
+            <span class="hint-icon" aria-hidden="true">📱</span>
+            <span class="hint-text">For the best experience, tap <strong>⛶ Fullscreen</strong> &mdash; play in landscape for the most screen space.</span>
+            <button id="dismissHint" class="hint-dismiss" aria-label="Dismiss hint">&times;</button>
+        </div>
+
         <div id="fileProtocolWarning" class="warning-banner" style="display:none;">
             <strong>WARNING:</strong> You're opening this file directly (`file://`).<br>
             Please use a web server instead:<br>
@@ -21,68 +32,92 @@
             Then open: <code>http://localhost:8000</code>
         </div>
 
-        <section class="workspace">
-            <div class="controls panel">
-                <div class="controls-top">
-                    <div class="field-group">
-                        <label for="systemSelect">Select System</label>
-                        <p class="field-note">Choose an emulator core before loading a ROM.</p>
-                    </div>
-                    <button id="controlSettingsBtn" class="settings-btn">
-                        Configure Controls
-                    </button>
-                </div>
-                <div class="controls-row">
-                    <div class="field-group field-grow">
-                        <label for="systemSelect">System</label>
-                        <div class="select-wrap">
-                            <select id="systemSelect">
-                                <option value="nes">Nintendo (NES)</option>
-                                <option value="gba">Game Boy Advance (GBA)</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="field-group field-grow">
-                        <label for="romFile">ROM File</label>
-                        <input type="file" id="romFile" accept=".nes,.gba">
+        <!-- Compact top bar: system, ROM, settings, fullscreen -->
+        <div class="top-bar panel">
+            <div class="top-bar-row">
+                <div class="field-group field-grow">
+                    <label for="systemSelect">System</label>
+                    <div class="select-wrap">
+                        <select id="systemSelect">
+                            <option value="nes">Nintendo (NES)</option>
+                            <option value="gba">Game Boy Advance (GBA)</option>
+                        </select>
                     </div>
                 </div>
-                <div id="status">Select a system and load a ROM file to start</div>
-                <div id="debug" class="debug"></div>
+                <div class="field-group field-grow">
+                    <label for="romFile">ROM File</label>
+                    <input type="file" id="romFile" accept=".nes,.gba">
+                </div>
+                <div class="field-group action-group">
+                    <label>&nbsp;</label>
+                    <div class="action-buttons">
+                        <button id="controlSettingsBtn" class="icon-btn" title="Configure controls" aria-label="Configure controls">
+                            <span aria-hidden="true">&#9881;</span>
+                        </button>
+                        <button id="fullscreenBtn" class="icon-btn icon-btn-primary" title="Toggle fullscreen / play mode" aria-label="Toggle fullscreen">
+                            <span aria-hidden="true">&#9974;</span>
+                        </button>
+                    </div>
+                </div>
             </div>
+        </div>
 
-            <div class="stage-panel panel">
-                <div class="stage-header">
-                    <div>
-                        <p class="eyebrow">Display</p>
-                        <h2>Game Screen</h2>
-                    </div>
-                    <span class="stage-badge">Local Runtime</span>
+        <!-- Stage / screen panel -->
+        <section class="stage-panel panel">
+            <div class="stage-header">
+                <div>
+                    <p class="eyebrow">Display</p>
+                    <h2>Game Screen</h2>
                 </div>
-                <div id="screen">
-                    <canvas id="canvas" width="256" height="240"></canvas>
-                    <div id="game-container" style="display:none;">
-                        <div id="game"></div>
+                <span id="stageBadge" class="stage-badge">Local Runtime</span>
+            </div>
+            <div id="screen">
+                <canvas id="canvas" width="256" height="240"></canvas>
+                <div id="game-container" style="display:none;">
+                    <div id="game"></div>
+                </div>
+
+                <!-- NES touch controls overlay (auto-shown on touch devices when NES loaded) -->
+                <div id="touchControls" class="touch-controls" style="display:none;">
+                    <div class="touch-dpad" data-touch-zone="dpad">
+                        <button class="touch-btn dpad-up"    data-touch-button="UP"    aria-label="Up">&#9650;</button>
+                        <button class="touch-btn dpad-left"  data-touch-button="LEFT"  aria-label="Left">&#9664;</button>
+                        <button class="touch-btn dpad-right" data-touch-button="RIGHT" aria-label="Right">&#9654;</button>
+                        <button class="touch-btn dpad-down"  data-touch-button="DOWN"  aria-label="Down">&#9660;</button>
+                        <span class="dpad-center" aria-hidden="true"></span>
+                    </div>
+                    <div class="touch-actions">
+                        <button class="touch-btn action-b" data-touch-button="B" aria-label="B">B</button>
+                        <button class="touch-btn action-a" data-touch-button="A" aria-label="A">A</button>
+                    </div>
+                    <div class="touch-system">
+                        <button class="touch-btn system-select" data-touch-button="SELECT" aria-label="Select">SELECT</button>
+                        <button class="touch-btn system-start"  data-touch-button="START"  aria-label="Start">START</button>
                     </div>
                 </div>
             </div>
+            <div id="status">Select a system and load a ROM file to start</div>
+            <details class="dev-details">
+                <summary>Developer log</summary>
+                <div id="debug" class="debug"></div>
+            </details>
         </section>
 
         <section class="info-grid">
             <div class="info panel">
                 <strong>Supported Systems</strong>
-                <p>NES runs on jsNES. GBA runs on EmulatorJS (mGBA core) — loaded on demand from CDN the first time you pick a GBA ROM.</p>
+                <p>NES runs on jsNES. GBA runs on EmulatorJS (mGBA core) &mdash; loaded on demand from CDN the first time you pick a GBA ROM.</p>
             </div>
             <div class="info panel">
                 <strong>Controls</strong>
                 <div class="control-summary">
                     <div class="control-summary-item">
                         <span class="system-chip">NES</span>
-                        <p>Arrows or WASD for movement, Z or J or N for A, X or K or M for B, Enter or Space for Start, Shift or C for Select.</p>
+                        <p>Keyboard: Arrows/WASD, Z/J/N (A), X/K/M (B), Enter/Space (Start), Shift/C (Select). On touch devices, use the on-screen pad.</p>
                     </div>
                     <div class="control-summary-item">
                         <span class="system-chip">GBA</span>
-                        <p>EmulatorJS handles its own input mapping &mdash; configure it from the in-emulator menu (gear icon).</p>
+                        <p>EmulatorJS handles its own input &mdash; configure it from the in-emulator menu (gear icon).</p>
                     </div>
                 </div>
             </div>
@@ -115,19 +150,19 @@
         </div>
     </div>
 
+    <!-- Exit fullscreen floating button (only visible in fullscreen mode) -->
+    <button id="exitFullscreenBtn" class="exit-fullscreen-btn" title="Exit fullscreen" aria-label="Exit fullscreen">&times;</button>
+
     <!-- Load jsNES library for NES emulation -->
     <script src="https://unpkg.com/jsnes@1.2.1/dist/jsnes.min.js"></script>
 
     <!-- Load our modules -->
     <script src="emulator.js"></script>
     <script src="controls.js"></script>
+    <script src="touchControls.js"></script>
     <script src="controlSettings.js"></script>
 
     <!-- Main application -->
-    <script src="main.js"></script>
-</body>
-</html>
-
     <script src="main.js"></script>
 </body>
 </html>

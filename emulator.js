@@ -268,5 +268,10 @@ class EmulatorManager {
             gameContainer.style.display = 'flex';
             if (gameMount) gameMount.innerHTML = '';
         }
+
+        // Notify main.js to re-evaluate touch-overlay visibility
+        if (typeof window.__syncTouchOverlay === 'function') {
+            window.__syncTouchOverlay();
+        }
     }
 }
