@@ -1,242 +1,211 @@
-# 🎮 Retro Emulator
+# Retro Emulator - NES & GBA in the Browser
 
-A modern, browser-based retro gaming emulator that runs classic Nintendo games entirely in your web browser. Upload your own ROM files for a fully legal gaming experience.
+A browser-based retro emulator for playing legally owned NES and Game Boy Advance ROMs directly from a web page. It is built as a static GitHub Pages project with a clean desktop layout, mobile touch controls for NES, and selectable GBA engine support.
 
-[![Live Demo](https://img.shields.io/badge/%E2%96%B6_Live_Demo-Play_Now-58a6ff?style=for-the-badge&labelColor=0d1117)](https://x1n-q.github.io/Web-Based-Emulator/)
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Play_Now-58a6ff?style=for-the-badge&labelColor=0d1117)](https://x1n-q.github.io/Web-Based-Emulator/)
+![License](https://img.shields.io/badge/license-GPL--3.0-green)
+![Made With](https://img.shields.io/badge/made_with-HTML_CSS_JavaScript-f7df1e)
+![Systems](https://img.shields.io/badge/systems-NES_&_GBA-84d1c4)
 
-![Browser Support](https://img.shields.io/badge/browser-Chrome%20%7C%20Firefox%20%7C%20Safari%20%7C%20Edge-blue)
-![License](https://img.shields.io/badge/license-MIT-green)
+## Tags
 
-## 📸 Screenshot
+`browser-emulator` `nes-emulator` `gba-emulator` `retro-gaming` `javascript` `html5-canvas` `webassembly` `emulatorjs` `mgba` `jsnes` `iodinegba` `github-pages`
 
-![NES Emulator Screenshot](screenshot.png)
+Suggested GitHub repository topics:
 
-*NES emulator running in the browser with the refreshed console-style interface*
+`browser-emulator`, `nes-emulator`, `gba-emulator`, `retro-gaming`, `javascript`, `html5-canvas`, `webassembly`, `emulatorjs`, `mgba`, `jsnes`, `iodinegba`, `github-pages`
 
-## ✨ Features
+## Live Demo
 
-- 🎮 **NES Emulation** - Fully functional Nintendo Entertainment System emulator
-- 🎮 **GBA Emulation** - Game Boy Advance support (WebAssembly-based)
-- ⌨️ **Customizable Controls** - Remap keys to your preference with the built-in control configurator
-- 💾 **Persistent Settings** - Your control mappings are saved automatically
-- 🎨 **Console-Inspired UI** - Cleaner flat interface with a focused local-runtime workspace
-- 📱 **Responsive Design** - Works on desktop, tablet, and mobile devices
-- 🚀 **No Installation Required** - Runs entirely in your browser
+Play here:
 
-## 🎯 Supported Systems
+https://x1n-q.github.io/Web-Based-Emulator/
 
-- ✅ **Nintendo Entertainment System (NES)** - Fully working
-- 🚧 **Game Boy Advance (GBA)** - In development (requires WASM setup)
+## Screenshot
 
-## 🚀 Quick Start
+![Retro Emulator Screenshot](screenshot.png)
 
-### Prerequisites
+## Features
 
-- A modern web browser (Chrome, Firefox, Safari, or Edge)
-- A local web server (required due to browser security restrictions)
+- NES support using jsNES.
+- GBA support using EmulatorJS with the mGBA core by default.
+- Optional standalone IodineGBA fallback from the GBA Engine selector.
+- Local ROM loading from your device. No ROM files are hosted or included.
+- Keyboard controls for NES with configurable mappings.
+- Mobile NES touch controls below the game screen.
+- EmulatorJS built-in controls for GBA on desktop and mobile.
+- Responsive layout for desktop, tablet, and phone screens.
+- Static web app that can run on GitHub Pages.
 
-### Installation
+## Supported Systems
 
-1. **Clone or download this repository**
-   ```bash
-   git clone https://github.com/x1n-Q/Web-Based-Emulator.git
-   cd Web-Based-Emulator
-   ```
+| System | Status | ROM Extension | Main Engine |
+| --- | --- | --- | --- |
+| Nintendo Entertainment System | Working | `.nes` | jsNES |
+| Game Boy Advance | Working / experimental on mobile | `.gba` | EmulatorJS with mGBA |
+| Game Boy Advance fallback | Optional | Uses in-frame picker | IodineGBA standalone |
 
-2. **Start a local web server**
+## Libraries Used
 
-   **Using Python 3:**
-   ```bash
-   python -m http.server 8000
-   ```
+- [jsNES](https://github.com/bfirsh/jsnes): JavaScript NES emulator used for NES games. Upstream license: Apache-2.0.
+- [EmulatorJS](https://emulatorjs.org/): Browser emulator frontend used for GBA playback and built-in GBA controls. Upstream license: GPL-3.0.
+- [mGBA](https://mgba.io/): GBA emulator core used by EmulatorJS. Upstream license: MPL-2.0.
+- [IodineGBA](https://github.com/taisel/IodineGBA): Standalone JavaScript GBA emulator added as an optional fallback engine. Upstream license: MIT-style license.
+- WebAssembly: Used by EmulatorJS/mGBA for better GBA performance.
+- HTML5 Canvas: Used for NES rendering and the app display area.
+- Web Audio API: Used by emulator engines for browser audio output.
+- LocalStorage: Used to save local control settings.
+- GitHub Pages: Hosts the static web app.
 
-   **Using Python 2:**
-   ```bash
-   python -m SimpleHTTPServer 8000
-   ```
+See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for attribution and license notes.
 
-   **Using Node.js:**
-   ```bash
-   npx http-server -p 8000
-   ```
+## Important GBA Notes
 
-   **Using PHP:**
-   ```bash
-   php -S localhost:8000
-   ```
+The default GBA option is **EmulatorJS / mGBA**. This is the recommended engine because it can use the ROM selected from the main file picker and includes its own touch/menu overlay.
 
-3. **Open your browser**
-   - Navigate to `http://localhost:8000`
-   - Select your system (NES or GBA)
-   - Click "Choose File" and select your ROM file
-   - Start playing!
+The **IodineGBA Standalone** option is a fallback. Because it runs inside a separate embedded page, browser security does not allow this project to pass your local ROM file into it automatically. When using IodineGBA, use its own in-frame file picker to choose a game.
 
-### Recommended Sample ROM
+## License and Attribution
 
-For safe demos and screenshots, use a legal homebrew NES ROM rather than copyrighted commercial games.
+This repository is licensed under **GPL-3.0** to stay compatible with the GPL-3.0 EmulatorJS code used by the GBA integration.
 
-- `Spacegulls (NES)` by Morphcat Games: https://morphcatgames.itch.io/spacegulls
+This project is not affiliated with Nintendo, EmulatorJS, mGBA, jsNES, IodineGBA, or any game publisher. It is a public web app that integrates and credits third-party emulator projects; it does not claim ownership of those upstream emulators.
 
-## 📁 Project Structure
+If you fork or reuse this project:
 
+- Keep the repository source public when distributing the project.
+- Keep the GPL-3.0 license notice.
+- Keep the third-party notices and credits.
+- Do not remove upstream license notices from any copied or bundled third-party code.
+- Do not include copyrighted ROMs.
+
+## Quick Start
+
+### Use the live site
+
+1. Open https://x1n-q.github.io/Web-Based-Emulator/
+2. Choose `Nintendo (NES)` or `Game Boy Advance (GBA)`.
+3. Click `Choose File`.
+4. Select your legally owned `.nes` or `.gba` ROM.
+5. Play in the browser.
+
+### Run locally
+
+Browsers block some emulator features when opened with `file://`, so use a local web server.
+
+```bash
+git clone https://github.com/x1n-Q/Web-Based-Emulator.git
+cd Web-Based-Emulator
+python -m http.server 8000
 ```
-retro-emulator/
-├── index.html              # Main HTML structure
-├── style.css               # Console-style layout and visual system
-├── main.js                  # Application entry point
-├── emulator.js              # Emulator core logic
-├── controls.js              # Input handling system
-├── controlSettings.js       # Control configuration UI
-├── screenshot.png           # NES emulator screenshot
-├── LICENSE                  # MIT License
-├── README.md                # This file
-└── (mgba.wasm & mgba.js)   # Optional: GBA WASM files
+
+Then open:
+
+```text
+http://localhost:8000
 ```
 
-**Note**: To add your own screenshot:
-1. Take a screenshot of the NES emulator running a game
-2. Save it as `screenshot.png` in the project root directory
-3. The README will automatically display it
+Other local server options:
 
-## ⌨️ Controls
+```bash
+npx http-server -p 8000
+php -S localhost:8000
+```
 
-### Default Keyboard Mappings
+## Controls
 
-**NES:**
-- **D-Pad**: Arrow Keys or WASD
-- **A Button**: Z, J, or N
-- **B Button**: X, K, or M
-- **Start**: Enter or Space
-- **Select**: Shift or C
+### NES keyboard controls
 
-**GBA:**
-- EmulatorJS provides its own input handling. Open the gear / menu icon in the in-game overlay to remap keys and configure gamepads.
+| NES Button | Default Keys |
+| --- | --- |
+| D-Pad | Arrow keys or WASD |
+| A | Z, J, or N |
+| B | X, K, or M |
+| Start | Enter or Space |
+| Select | Shift or C |
 
-### Customizing Controls
+NES controls can be changed in the built-in control settings panel. On phones and tablets, the NES touch pad appears below the screen.
 
-1. Click the **"⚙️ Configure Controls"** button
-2. Select your system (NES or GBA)
-3. For each button:
-   - Click **"+ Add Key"** and press the key you want to assign
-   - Remove keys by clicking the **×** button on key badges
-4. Click **"Save Controls"** to save your settings
-5. Your custom controls are automatically saved and will persist across sessions
+### GBA controls
 
-## 🔧 Technical Details
+GBA is handled by EmulatorJS by default. Use the in-game gear/menu overlay to configure controls, volume, fullscreen, save states, and other EmulatorJS options.
 
-### Emulator Cores
+The custom lower touch pad is intentionally hidden for GBA so it does not conflict with EmulatorJS controls.
 
-- **NES**: Uses [jsnes](https://github.com/bfirsh/jsnes) - A JavaScript NES emulator
-- **GBA**: Uses mGBA compiled to WebAssembly - A C-based GBA emulator compiled with Emscripten
+## Project Structure
 
-### GBA WebAssembly Setup
+```text
+Web-Based-Emulator/
+|-- index.html              Main page and controls
+|-- style.css               Responsive layout and visual design
+|-- main.js                 App startup and UI events
+|-- emulator.js             NES/GBA emulator manager
+|-- controls.js             Keyboard input handling
+|-- touchControls.js        NES mobile touch pad
+|-- controlSettings.js      Control remapping UI
+|-- screenshot.png          README screenshot
+|-- CODE_OF_CONDUCT.md      Community behavior rules
+|-- CONTRIBUTING.md         Contribution and fork guidelines
+|-- THIRD_PARTY_NOTICES.md  Third-party attribution and licenses
+|-- LICENSE                 GPL-3.0 license
+`-- README.md               Project documentation
+```
 
-The GBA emulator requires mGBA compiled to WebAssembly. The emulator will:
+## Browser Support
 
-1. **First try to load local WASM files** (`mgba.wasm` and `mgba.js`) from the project directory
-2. **Fall back to CDN sources** if local files aren't available
-3. **Use a JavaScript fallback** if WASM isn't available (for development/testing)
+- Chrome / Edge recommended.
+- Firefox supported.
+- Safari supported, but mobile behavior may vary depending on iOS browser limits.
+- For best GBA performance, use a modern browser with WebAssembly support.
 
-#### To Use Your Own Compiled mGBA WASM:
+## Troubleshooting
 
-1. **Install Emscripten SDK:**
-   ```bash
-   git clone https://github.com/emscripten-core/emsdk.git
-   cd emsdk
-   ./emsdk install latest
-   ./emsdk activate latest
-   source ./emsdk_env.sh
-   ```
+### ROM will not load
 
-2. **Compile mGBA:**
-   ```bash
-   git clone https://github.com/mgba-emu/mgba.git
-   cd mgba
-   # Follow mGBA's build instructions for Emscripten
-   # This will generate mgba.js and mgba.wasm files
-   ```
+- Make sure the selected system matches the ROM extension.
+- NES expects `.nes`.
+- GBA expects `.gba`.
+- Try another legally owned ROM to confirm the file is not corrupted.
 
-3. **Place the compiled files** in your project directory:
-   - `mgba.wasm` - The WebAssembly binary
-   - `mgba.js` - The Emscripten JavaScript loader
+### GBA controls cover the screen
 
-4. **The emulator will automatically detect and use them** when you load a GBA ROM
+- Use the default EmulatorJS / mGBA engine first.
+- Rotate the phone or scroll slightly if the screen needs more vertical space.
+- If needed, try the IodineGBA standalone fallback from the GBA Engine selector.
 
-**Note**: For best performance, use the compiled WASM version. The JavaScript fallback is provided for testing purposes.
+### Nothing works locally
 
-## 📋 Supported ROM Formats
+- Do not open the project with `file://`.
+- Start a local server with `python -m http.server 8000`.
+- Open `http://localhost:8000`.
 
-| System | File Extensions |
-|--------|----------------|
-| NES    | `.nes`         |
-| GBA    | `.gba`         |
+### Audio or keyboard does not respond
 
-## 🌐 Browser Compatibility
+- Click or tap the game area once so the browser gives it focus.
+- Check the browser's audio permission.
+- For NES, review the control settings panel.
+- For GBA, use the EmulatorJS gear/menu overlay.
 
-- ✅ Chrome/Edge (recommended)
-- ✅ Firefox
-- ✅ Safari
-- ✅ Opera
+## Legal
 
-**Note**: For best performance, use the latest version of your browser.
+This project does not include, host, or distribute ROM files. You must provide your own legally obtained ROMs.
 
-## 🐛 Troubleshooting
+- Do not upload or use copyrighted ROMs that you do not legally own.
+- This project is intended for education, preservation, and personal use.
+- Game copyrights belong to their respective owners.
+- Emulator and library copyrights belong to their upstream authors.
 
-### ROM won't load
-- Ensure the file extension matches the selected system
-- Verify the ROM file is not corrupted
-- Try a different ROM file to test
+## Credits
 
-### GBA emulator not working
-- Check browser console (F12) for error messages
-- Ensure you have a compiled `mgba.wasm` and `mgba.js` in the project directory
-- Try using a different browser
-- Check your internet connection if using CDN sources
+- jsNES by Ben Firshman and contributors.
+- EmulatorJS and its contributors.
+- mGBA Team.
+- IodineGBA by Grant Galitz and contributors.
+- Emscripten/WebAssembly ecosystem.
+- Browser APIs: HTML5 Canvas, Web Audio API, File API, and LocalStorage.
 
-### Controls not working
-- Click on the game screen to ensure focus
-- Open the control settings button and verify your key mappings
-- Try refreshing the page
+## License
 
-### Game runs slowly
-- Close other browser tabs
-- Try a different browser
-- Some games are more demanding than others
-- Ensure your device meets minimum requirements
+This project is licensed under the GNU General Public License v3.0. See [LICENSE](LICENSE) for details.
 
-### CORS errors
-- **Important**: You must use a web server (not `file://` protocol)
-- Use one of the server methods listed in the Quick Start section
-- Access the emulator via `http://localhost:8000` (or your chosen port)
-
-## ⚖️ Legal Disclaimer
-
-**IMPORTANT**: This emulator does not host, distribute, or provide any ROM files. Users must provide their own legally obtained ROM files.
-
-- Uploading copyrighted ROMs that you do not own is illegal
-- Only use ROMs for games you legally own
-- This emulator is for educational and preservation purposes
-- The developers are not responsible for any illegal use of this software
-
-## 🙏 Credits
-
-- **[jsnes](https://github.com/bfirsh/jsnes)** - JavaScript NES emulator by bfirsh
-- **[mGBA](https://github.com/mgba-emu/mgba)** - C-based GBA emulator by mGBA Team
-- **[Emscripten](https://emscripten.org/)** - For compiling C code to WebAssembly
-- **Web Audio API** - For audio playback
-- **HTML5 Canvas** - For game rendering
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-The emulator itself is free to use, but ROM files are subject to their respective copyright holders.
-
----
-
-**Enjoy retro gaming in your browser!** 🎮
-
-Made with ❤️ for retro gaming enthusiasts
-Enjoy retro gaming in your browser!** 🎮
-
-Made with ❤️ for retro gaming enthusiasts
+Enjoy retro gaming in your browser.
