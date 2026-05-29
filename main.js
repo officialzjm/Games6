@@ -33,15 +33,31 @@ document.addEventListener('DOMContentLoaded', () => {
     const isMobileViewport = () => window.innerWidth <= 768;
 
     function syncTouchOverlay() {
-        // Show touch controls only when: touch device, NES selected, and either fullscreen-mode
-        // is on OR we're on a mobile viewport. Hide for GBA (EmulatorJS has its own).
+        // Touch controls are ONLY shown in fullscreen-mode for NES.
+        // Outside fullscreen the screen is too small for thumb play anyway,
+        // and floating overlay buttons would block UI taps.
         if (!touchControls.container) return;
         const fsMode = document.body.classList.contains('fullscreen-mode');
         const shouldShow = isTouchDevice
                           && emulator.currentSystem === 'nes'
-                          && (fsMode || isMobileViewport());
+                          && fsMode;
         if (shouldShow) touchControls.show();
         else touchControls.hide();
+
+        // Centered "▶ Play in Fullscreen" button on touch devices when a NES
+        // ROM is running but we're not in fullscreen.
+        syncPlayCTA();
+    }
+
+    function syncPlayCTA() {
+        const cta = document.getElementById('playCta');
+        if (!cta) return;
+        const fsMode = document.body.classList.contains('fullscreen-mode');
+        const shouldShow = isTouchDevice
+                          && emulator.running
+                          && emulator.currentSystem === 'nes'
+                          && !fsMode;
+        cta.style.display = shouldShow ? 'flex' : 'none';
     }
     // Make it globally accessible so EmulatorManager.setSystem can call it
     window.__syncTouchOverlay = syncTouchOverlay;
@@ -118,6 +134,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     fullscreenBtn.addEventListener('click', togglePlayMode);
     exitFullscreenBtn.addEventListener('click', exitPlayMode);
+
+    // Centered "Play in Fullscreen" call-to-action (touch + NES)
+    const playCtaBtn = document.getElementById('playCtaBtn');
+    if (playCtaBtn) {
+        playCtaBtn.addEventListener('click', enterPlayMode);
+    }
 
     // Keep our CSS class in sync if user exits via gesture / ESC
     document.addEventListener('fullscreenchange', () => {

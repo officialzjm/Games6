@@ -171,6 +171,8 @@ h1 {
 .top-bar {
     padding: 14px;
     margin-bottom: 14px;
+    position: relative;
+    z-index: 50; /* always above #screen overlays/touch controls */
 }
 
 .top-bar-row {
@@ -500,10 +502,75 @@ input[type="file"]::file-selector-button {
 .modal-content::-webkit-scrollbar-thumb { background: #30363f; border-radius: 999px; }
 
 /* -------------------------------------------------------------
+   "Play in Fullscreen" call-to-action overlay
+   ------------------------------------------------------------- */
+.play-cta {
+    position: absolute;
+    inset: 0;
+    z-index: 6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(180deg, rgba(0,0,0,0.55), rgba(0,0,0,0.75));
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    border-radius: 10px;
+    pointer-events: auto;
+}
+
+.play-cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 22px;
+    border-radius: 999px;
+    border: 1px solid rgba(132, 209, 196, 0.6);
+    background: rgba(132, 209, 196, 0.95);
+    color: #10201d;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.55), 0 0 0 4px rgba(132, 209, 196, 0.15);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.play-cta-btn:active {
+    transform: scale(0.96);
+}
+
+.play-cta-icon {
+    font-size: 1.6rem;
+    line-height: 1;
+}
+
+.play-cta-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    line-height: 1.15;
+}
+
+.play-cta-text strong {
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.play-cta-text small {
+    font-size: 0.72rem;
+    font-weight: 500;
+    opacity: 0.8;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-top: 2px;
+}
+
+/* -------------------------------------------------------------
    NES Touch Controls Overlay
+   (only ever visible inside body.fullscreen-mode — see fullscreen rules)
    ------------------------------------------------------------- */
 .touch-controls {
-    display: none;
+    display: none !important; /* forced off outside fullscreen, defense-in-depth */
     position: absolute;
     inset: 0;
     pointer-events: none; /* children re-enable */
@@ -512,6 +579,10 @@ input[type="file"]::file-selector-button {
     -webkit-tap-highlight-color: transparent;
     touch-action: none;
     z-index: 5;
+}
+
+body.fullscreen-mode .touch-controls[style*="flex"] {
+    display: flex !important;
 }
 
 .touch-controls > * {

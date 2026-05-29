@@ -77,7 +77,19 @@
                     <div id="game"></div>
                 </div>
 
-                <!-- NES touch controls overlay (auto-shown on touch devices when NES loaded) -->
+                <!-- Centered call-to-action: appears when NES ROM is loaded on a touch device,
+                     prompting the user to enter fullscreen for actual playability -->
+                <div id="playCta" class="play-cta" style="display:none;">
+                    <button id="playCtaBtn" class="play-cta-btn" type="button">
+                        <span class="play-cta-icon" aria-hidden="true">&#9654;</span>
+                        <span class="play-cta-text">
+                            <strong>Play in Fullscreen</strong>
+                            <small>Best for touch controls</small>
+                        </span>
+                    </button>
+                </div>
+
+                <!-- NES touch controls overlay (only shown in fullscreen-mode) -->
                 <div id="touchControls" class="touch-controls" style="display:none;">
                     <div class="touch-dpad" data-touch-zone="dpad">
                         <button class="touch-btn dpad-up"    data-touch-button="UP"    aria-label="Up">&#9650;</button>
