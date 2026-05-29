@@ -2,6 +2,8 @@
 
 A modern, browser-based retro gaming emulator that runs classic Nintendo games entirely in your web browser. Upload your own ROM files for a fully legal gaming experience.
 
+[![Live Demo](https://img.shields.io/badge/%E2%96%B6_Live_Demo-Play_Now-58a6ff?style=for-the-badge&labelColor=0d1117)](https://x1n-q.github.io/Web-Based-Emulator/)
+
 ![Browser Support](https://img.shields.io/badge/browser-Chrome%20%7C%20Firefox%20%7C%20Safari%20%7C%20Edge-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
