@@ -987,70 +987,28 @@ body.fullscreen-mode #game-container {
     aspect-ratio: auto !important;
 }
 
-body.fullscreen-mode #game,
-body.fullscreen-mode #game > .ejs_game,
-body.fullscreen-mode #game .ejs_player {
+/* In fullscreen, only size our own #game wrapper. EmulatorJS internals
+   manage themselves (aspect ratio, sizing, virtual gamepad). */
+body.fullscreen-mode #game {
     width: 100% !important;
     height: 100% !important;
-    max-width: 100% !important;
-    max-height: 100% !important;
     background: #000 !important;
     border: 0 !important;
     border-radius: 0 !important;
 }
 
-/* Hide EmulatorJS menu chrome in play mode. The translucent rounded bars on
-   mobile are the small-screen menu, and they can sit over the gamepad taps. */
-body.system-gba #game .ejs_menu_bar,
-body.system-gba #game .ejs_menu_bar *,
-body.system-gba #game .ejs_top_bar,
-body.system-gba #game .ejs_message,
-body.system-gba #game .ejs_settings_parent,
-body.system-gba #game .ejs_context_menu,
-body.system-gba #game .ejs_context_menu *,
-body.system-gba #game .ejs_popup_container,
-body.system-gba #game .ejs_virtualGamepad_open {
-    display: none !important;
-    visibility: hidden !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
-}
-
+/* GBA in fullscreen: just let EmulatorJS render normally inside the container.
+   Do NOT override .ejs_* selectors — the library handles its own layout,
+   menu bar, virtual gamepad, and fullscreen-aware sizing. */
 body.fullscreen-mode #game canvas {
-    width: 100% !important;
-    height: 100% !important;
-    max-width: 100% !important;
-    max-height: 100% !important;
+    max-width: 100%;
+    max-height: 100%;
     object-fit: contain;
-    background: #000 !important;
+    background: #000;
 }
 
-body.fullscreen-mode.system-gba #game .ejs_parent,
-body.fullscreen-mode.system-gba #game .ejs_game,
-body.fullscreen-mode.system-gba #game .ejs_canvas_parent {
-    position: relative;
-    touch-action: none;
-}
-
-body.fullscreen-mode.system-gba #game .ejs_canvas_parent,
-body.fullscreen-mode.system-gba #game canvas {
-    z-index: 1;
-}
-
-body.fullscreen-mode.system-gba #game .ejs_virtualGamepad_parent,
-body.fullscreen-mode.system-gba #game .ejs_virtualGamepad_top,
-body.fullscreen-mode.system-gba #game .ejs_virtualGamepad_bottom,
-body.fullscreen-mode.system-gba #game .ejs_virtualGamepad_left,
-body.fullscreen-mode.system-gba #game .ejs_virtualGamepad_right,
-body.fullscreen-mode.system-gba #game .ejs_virtualGamepad_button,
-body.fullscreen-mode.system-gba #game .ejs_dpad_main,
-body.fullscreen-mode.system-gba #game .ejs_virtualGamepad_open {
-    z-index: 10020 !important;
-    pointer-events: auto !important;
-    touch-action: none;
-}
-
-body.fullscreen-mode:not(.system-gba) .exit-fullscreen-btn {
+/* Exit-fullscreen button: always visible in fullscreen mode (any system) */
+body.fullscreen-mode .exit-fullscreen-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -1185,4 +1143,6 @@ body.fullscreen-mode .touch-system {
     /* Bigger touch buttons in landscape for thumbs */
     .touch-dpad { width: 150px; height: 150px; }
     .touch-actions { width: 150px; height: 115px; bottom: 14px; }
+}
+ght: 115px; bottom: 14px; }
 }
