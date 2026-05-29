@@ -23,9 +23,7 @@
     --radius-sm: 14px;
 }
 
-html {
-    background: var(--bg);
-}
+html { background: var(--bg); }
 
 body {
     min-height: 100vh;
@@ -56,9 +54,7 @@ body > * {
     margin: 0 auto;
 }
 
-.app-header {
-    margin-bottom: 18px;
-}
+.app-header { margin-bottom: 18px; }
 
 .eyebrow {
     color: var(--accent);
@@ -81,65 +77,6 @@ h1 {
     color: var(--muted);
     font-size: 0.92rem;
     line-height: 1.6;
-}
-
-/* -------------------------------------------------------------
-   Fullscreen recommendation hint
-   ------------------------------------------------------------- */
-.fullscreen-hint {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 14px;
-    margin-bottom: 14px;
-    border-radius: var(--radius-sm);
-    background: linear-gradient(135deg, rgba(132, 209, 196, 0.12), rgba(132, 209, 196, 0.06));
-    border: 1px solid rgba(132, 209, 196, 0.35);
-    color: var(--text);
-    font-size: 0.9rem;
-    line-height: 1.45;
-    box-shadow: 0 6px 22px rgba(0, 0, 0, 0.25);
-    animation: hintSlide 0.35s ease both;
-}
-
-@keyframes hintSlide {
-    from { opacity: 0; transform: translateY(-6px); }
-    to   { opacity: 1; transform: translateY(0); }
-}
-
-.fullscreen-hint .hint-icon {
-    font-size: 1.2rem;
-    flex-shrink: 0;
-}
-
-.fullscreen-hint .hint-text {
-    flex: 1;
-    min-width: 0;
-}
-
-.fullscreen-hint .hint-text strong {
-    color: var(--accent);
-    font-weight: 700;
-}
-
-.fullscreen-hint .hint-dismiss {
-    flex-shrink: 0;
-    width: 30px;
-    height: 30px;
-    padding: 0;
-    border-radius: 8px;
-    border: 1px solid var(--line);
-    background: rgba(15, 17, 19, 0.6);
-    color: var(--muted);
-    font-size: 1.3rem;
-    line-height: 1;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.fullscreen-hint .hint-dismiss:hover {
-    color: var(--text);
-    border-color: var(--accent);
 }
 
 .warning-banner {
@@ -166,13 +103,11 @@ h1 {
 }
 
 /* -------------------------------------------------------------
-   Compact top bar (system / ROM / settings / fullscreen)
+   Compact top bar
    ------------------------------------------------------------- */
 .top-bar {
     padding: 14px;
     margin-bottom: 14px;
-    position: relative;
-    z-index: 50; /* always above #screen overlays/touch controls */
 }
 
 .top-bar-row {
@@ -182,9 +117,7 @@ h1 {
     align-items: end;
 }
 
-.action-group {
-    flex-shrink: 0;
-}
+.action-group { flex-shrink: 0; }
 
 .action-buttons {
     display: flex;
@@ -213,18 +146,6 @@ h1 {
     color: var(--accent);
 }
 
-.icon-btn-primary {
-    background: var(--accent);
-    color: #10201d;
-    border-color: transparent;
-    font-weight: 700;
-}
-
-.icon-btn-primary:hover {
-    background: var(--accent-strong);
-    color: #10201d;
-}
-
 .panel {
     background: rgba(23, 26, 29, 0.94);
     border: 1px solid var(--line);
@@ -232,13 +153,8 @@ h1 {
     box-shadow: var(--shadow);
 }
 
-.field-group {
-    min-width: 0;
-}
-
-.field-grow {
-    width: 100%;
-}
+.field-group { min-width: 0; }
+.field-grow { width: 100%; }
 
 .field-group label,
 .control-group label {
@@ -249,9 +165,7 @@ h1 {
     font-size: 0.85rem;
 }
 
-.select-wrap {
-    position: relative;
-}
+.select-wrap { position: relative; }
 
 select,
 input[type="file"] {
@@ -284,9 +198,7 @@ input[type="file"]:focus {
     background-color: var(--bg-panel-strong);
 }
 
-input[type="file"] {
-    padding: 8px;
-}
+input[type="file"] { padding: 8px; }
 
 input[type="file"]::file-selector-button {
     margin-right: 10px;
@@ -338,9 +250,7 @@ input[type="file"]::file-selector-button {
 /* -------------------------------------------------------------
    Stage panel + screen
    ------------------------------------------------------------- */
-.stage-panel {
-    padding: 14px;
-}
+.stage-panel { padding: 14px; }
 
 .stage-header {
     display: flex;
@@ -367,7 +277,6 @@ input[type="file"]::file-selector-button {
 }
 
 #screen {
-    position: relative;
     background: #0b0d0f;
     border-radius: 16px;
     padding: 12px;
@@ -395,9 +304,7 @@ input[type="file"]::file-selector-button {
     object-fit: contain;
 }
 
-#canvas.gba {
-    aspect-ratio: 240 / 160;
-}
+#canvas.gba { aspect-ratio: 240 / 160; }
 
 #game-container {
     display: none;
@@ -422,14 +329,24 @@ input[type="file"]::file-selector-button {
     width: 100%;
     height: 100%;
     background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
+/* Let EmulatorJS size its own internals — only constrain to not overflow */
 #game .ejs_player,
 #game > div {
-    width: 100% !important;
-    height: 100% !important;
     max-width: 100%;
     max-height: 100%;
+}
+
+#game canvas {
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
 }
 
 #status {
@@ -478,9 +395,7 @@ input[type="file"]::file-selector-button {
     transform: rotate(90deg);
 }
 
-.dev-details > summary:hover {
-    color: var(--text);
-}
+.dev-details > summary:hover { color: var(--text); }
 
 .debug {
     max-height: 110px;
@@ -502,99 +417,30 @@ input[type="file"]::file-selector-button {
 .modal-content::-webkit-scrollbar-thumb { background: #30363f; border-radius: 999px; }
 
 /* -------------------------------------------------------------
-   "Play in Fullscreen" call-to-action overlay
-   ------------------------------------------------------------- */
-.play-cta {
-    position: absolute;
-    inset: 0;
-    z-index: 6;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(180deg, rgba(0,0,0,0.55), rgba(0,0,0,0.75));
-    backdrop-filter: blur(3px);
-    -webkit-backdrop-filter: blur(3px);
-    border-radius: 10px;
-    pointer-events: auto;
-}
-
-.play-cta-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 14px;
-    padding: 14px 22px;
-    border-radius: 999px;
-    border: 1px solid rgba(132, 209, 196, 0.6);
-    background: rgba(132, 209, 196, 0.95);
-    color: #10201d;
-    font: inherit;
-    font-weight: 700;
-    cursor: pointer;
-    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.55), 0 0 0 4px rgba(132, 209, 196, 0.15);
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
-    -webkit-tap-highlight-color: transparent;
-}
-
-.play-cta-btn:active {
-    transform: scale(0.96);
-}
-
-.play-cta-icon {
-    font-size: 1.6rem;
-    line-height: 1;
-}
-
-.play-cta-text {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    line-height: 1.15;
-}
-
-.play-cta-text strong {
-    font-size: 1rem;
-    font-weight: 700;
-}
-
-.play-cta-text small {
-    font-size: 0.72rem;
-    font-weight: 500;
-    opacity: 0.8;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin-top: 2px;
-}
-
-/* -------------------------------------------------------------
-   NES Touch Controls Overlay
-   (only ever visible inside body.fullscreen-mode — see fullscreen rules)
+   NES Touch Controls — INLINE block, sits below the game screen.
+   No absolute positioning, no overlays, can't block any other UI.
    ------------------------------------------------------------- */
 .touch-controls {
-    display: none !important; /* forced off outside fullscreen, defense-in-depth */
-    position: absolute;
-    inset: 0;
-    pointer-events: none; /* children re-enable */
+    display: none; /* set to grid by JS show() when NES + touch device */
+    margin-top: 14px;
+    padding: 14px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--line);
+    background: rgba(15, 17, 19, 0.6);
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    justify-items: center;
+    gap: 14px;
     user-select: none;
     -webkit-user-select: none;
     -webkit-tap-highlight-color: transparent;
     touch-action: none;
-    z-index: 5;
-}
-
-body.fullscreen-mode .touch-controls[style*="flex"] {
-    display: flex !important;
-}
-
-.touch-controls > * {
-    pointer-events: auto;
-    position: absolute;
 }
 
 .touch-dpad {
-    bottom: 14px;
-    left: 14px;
-    width: 168px;
-    height: 168px;
+    position: relative;
+    width: 150px;
+    height: 150px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(3, 1fr);
@@ -612,46 +458,45 @@ body.fullscreen-mode .touch-controls[style*="flex"] {
     pointer-events: none;
 }
 
-.touch-actions {
-    bottom: 28px;
-    right: 14px;
-    width: 168px;
-    height: 130px;
-}
-
-.action-a {
-    position: absolute;
-    width: 76px;
-    height: 76px;
-    border-radius: 50%;
-    top: 0;
-    right: 0;
-}
-
-.action-b {
-    position: absolute;
-    width: 76px;
-    height: 76px;
-    border-radius: 50%;
-    bottom: 0;
-    left: 0;
-}
-
 .touch-system {
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
     display: flex;
-    gap: 10px;
+    flex-direction: column;
+    gap: 8px;
 }
 
 .system-select,
 .system-start {
-    min-width: 76px;
-    height: 30px;
+    min-width: 84px;
+    height: 32px;
     border-radius: 999px;
     font-size: 0.7rem;
     letter-spacing: 0.08em;
+}
+
+.touch-actions {
+    position: relative;
+    width: 150px;
+    height: 120px;
+}
+
+.action-a {
+    position: absolute;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    top: 0;
+    right: 0;
+    font-size: 1.5rem;
+}
+
+.action-b {
+    position: absolute;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    bottom: 0;
+    left: 0;
+    font-size: 1.5rem;
 }
 
 .touch-btn {
@@ -662,8 +507,6 @@ body.fullscreen-mode .touch-controls[style*="flex"] {
     font-weight: 700;
     font-size: 1rem;
     cursor: pointer;
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
     transition: background 0.08s ease, transform 0.08s ease, border-color 0.08s ease;
     user-select: none;
     -webkit-user-select: none;
@@ -681,13 +524,6 @@ body.fullscreen-mode .touch-controls[style*="flex"] {
     transform: scale(0.95);
     box-shadow: 0 0 16px rgba(132, 209, 196, 0.6);
 }
-
-.action-a, .action-b {
-    font-size: 1.6rem;
-}
-
-/* Hide D-pad center span from accidental clicks */
-.dpad-center { pointer-events: none; }
 
 /* -------------------------------------------------------------
    Info grid
@@ -736,7 +572,7 @@ body.fullscreen-mode .touch-controls[style*="flex"] {
 }
 
 /* -------------------------------------------------------------
-   Modal (configure controls)
+   Modal
    ------------------------------------------------------------- */
 .modal {
     display: none;
@@ -888,147 +724,6 @@ body.fullscreen-mode .touch-controls[style*="flex"] {
 
 .notification.show { opacity: 1; transform: translateY(0); }
 
-/* -------------------------------------------------------------
-   Exit fullscreen floating button (only in play mode)
-   ------------------------------------------------------------- */
-.exit-fullscreen-btn {
-    display: none;
-    position: fixed;
-    top: max(12px, env(safe-area-inset-top));
-    right: max(12px, env(safe-area-inset-right));
-    z-index: 9999;
-    width: 42px;
-    height: 42px;
-    padding: 0;
-    border-radius: 50%;
-    border: 1px solid rgba(255, 255, 255, 0.22);
-    background: rgba(15, 17, 19, 0.75);
-    color: var(--text);
-    font-size: 1.6rem;
-    line-height: 1;
-    cursor: pointer;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
-}
-
-/* -------------------------------------------------------------
-   FULLSCREEN / PLAY MODE — body.fullscreen-mode
-   ------------------------------------------------------------- */
-body.fullscreen-mode {
-    padding: 0;
-    overflow: hidden;
-    background: #000;
-}
-
-body.fullscreen-mode::before { display: none; }
-
-body.fullscreen-mode .app-header,
-body.fullscreen-mode .info-grid,
-body.fullscreen-mode .top-bar,
-body.fullscreen-mode .fullscreen-hint,
-body.fullscreen-mode .warning-banner,
-body.fullscreen-mode .stage-header,
-body.fullscreen-mode #status,
-body.fullscreen-mode .dev-details {
-    display: none !important;
-}
-
-body.fullscreen-mode .app-shell {
-    width: 100vw;
-    height: 100vh;
-    max-width: none;
-    margin: 0;
-}
-
-body.fullscreen-mode .stage-panel {
-    width: 100vw !important;
-    height: 100vh !important;
-    height: 100dvh !important; /* dynamic viewport — accounts for mobile browser chrome */
-    border-radius: 0 !important;
-    border: 0 !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    background: #000 !important;
-    box-shadow: none !important;
-}
-
-body.fullscreen-mode #screen {
-    width: 100vw !important;
-    height: 100vh !important;
-    height: 100dvh !important;
-    padding: 0 !important;
-    border-radius: 0 !important;
-    border: 0 !important;
-    background: #000 !important;
-    overflow: hidden;
-}
-
-body.fullscreen-mode #canvas {
-    width: 100% !important;
-    height: 100% !important;
-    max-width: 100% !important;
-    max-height: 100% !important;
-    border-radius: 0 !important;
-    border: 0 !important;
-    background: #000 !important;
-    object-fit: contain;
-    aspect-ratio: auto !important;
-}
-
-body.fullscreen-mode #game-container {
-    width: 100% !important;
-    height: 100% !important;
-    max-width: 100% !important;
-    max-height: 100% !important;
-    border-radius: 0 !important;
-    border: 0 !important;
-    background: #000 !important;
-    aspect-ratio: auto !important;
-}
-
-/* In fullscreen, only size our own #game wrapper. EmulatorJS internals
-   manage themselves (aspect ratio, sizing, virtual gamepad). */
-body.fullscreen-mode #game {
-    width: 100% !important;
-    height: 100% !important;
-    background: #000 !important;
-    border: 0 !important;
-    border-radius: 0 !important;
-}
-
-/* GBA in fullscreen: just let EmulatorJS render normally inside the container.
-   Do NOT override .ejs_* selectors — the library handles its own layout,
-   menu bar, virtual gamepad, and fullscreen-aware sizing. */
-body.fullscreen-mode #game canvas {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-    background: #000;
-}
-
-/* Exit-fullscreen button: always visible in fullscreen mode (any system) */
-body.fullscreen-mode .exit-fullscreen-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/* When in fullscreen-mode on touch, push touch controls inset to avoid notches */
-body.fullscreen-mode .touch-dpad {
-    bottom: max(14px, env(safe-area-inset-bottom));
-    left: max(14px, env(safe-area-inset-left));
-}
-
-body.fullscreen-mode .touch-actions {
-    bottom: max(28px, env(safe-area-inset-bottom));
-    right: max(14px, env(safe-area-inset-right));
-}
-
-body.fullscreen-mode .touch-system {
-    bottom: max(10px, env(safe-area-inset-bottom));
-}
-
 /* =============================================================
    RESPONSIVE BREAKPOINTS
    ============================================================= */
@@ -1054,9 +749,7 @@ body.fullscreen-mode .touch-system {
         grid-column: 1 / -1;
     }
 
-    .action-buttons {
-        justify-content: flex-end;
-    }
+    .action-buttons { justify-content: flex-end; }
 
     .stage-panel, .info, .modal-body { padding: 12px; }
 
@@ -1076,17 +769,18 @@ body.fullscreen-mode .touch-system {
     .control-label { flex-basis: auto; }
 
     #screen { padding: 8px; }
-    #canvas { max-height: 55vh; }
-    #game-container { max-height: 60vh; }
+    #canvas { max-height: 50vh; }
+    #game-container { max-height: 55vh; }
 
     .modal-header { padding: 14px 16px; }
     .modal-header h2 { font-size: 1.1rem; }
     .modal-body { padding: 14px; }
 
-    .touch-dpad { width: 144px; height: 144px; bottom: 10px; left: 10px; }
-    .touch-actions { width: 144px; height: 110px; bottom: 22px; right: 10px; }
-    .action-a, .action-b { width: 66px; height: 66px; font-size: 1.4rem; }
-    .system-select, .system-start { min-width: 64px; font-size: 0.66rem; }
+    .touch-controls { padding: 12px; gap: 10px; }
+    .touch-dpad { width: 130px; height: 130px; }
+    .touch-actions { width: 130px; height: 100px; }
+    .action-a, .action-b { width: 60px; height: 60px; font-size: 1.3rem; }
+    .system-select, .system-start { min-width: 72px; font-size: 0.66rem; }
 }
 
 @media (max-width: 480px) {
@@ -1111,7 +805,9 @@ body.fullscreen-mode .touch-system {
     .stage-header h2 { font-size: 0.95rem; }
 
     #screen { padding: 6px; border-radius: 12px; }
-    #canvas, #game-container { border-radius: 8px; max-height: none; }
+    #canvas, #game-container { border-radius: 8px; }
+    #canvas { max-height: 45vh; }
+    #game-container { max-height: 50vh; }
 
     #status { font-size: 0.8rem; padding: 9px 12px; min-height: 38px; }
 
@@ -1120,29 +816,13 @@ body.fullscreen-mode .touch-system {
 
     .notification { left: 8px; right: 8px; bottom: 8px; text-align: center; }
 
-    /* Slightly smaller touch controls on tiny screens */
-    .touch-dpad { width: 128px; height: 128px; }
-    .touch-actions { width: 130px; height: 100px; }
-    .action-a, .action-b { width: 58px; height: 58px; font-size: 1.25rem; }
-}
-
-/* Landscape phones — hide chrome, give the game everything */
-@media (max-width: 900px) and (orientation: landscape) and (max-height: 500px) {
-    .app-header, .info-grid, .fullscreen-hint { display: none; }
-
-    body { padding: 6px; }
-    .top-bar { padding: 8px; margin-bottom: 8px; }
-
-    .stage-panel { padding: 6px; }
-    #screen { padding: 4px; }
-    #canvas { max-height: 88vh; }
-    #game-container { max-height: 92vh; }
-
-    .dev-details { display: none; }
-
-    /* Bigger touch buttons in landscape for thumbs */
-    .touch-dpad { width: 150px; height: 150px; }
-    .touch-actions { width: 150px; height: 115px; bottom: 14px; }
-}
-ght: 115px; bottom: 14px; }
+    .touch-controls {
+        grid-template-columns: auto 1fr auto;
+        padding: 10px;
+        gap: 8px;
+    }
+    .touch-dpad { width: 118px; height: 118px; }
+    .touch-actions { width: 118px; height: 92px; }
+    .action-a, .action-b { width: 55px; height: 55px; font-size: 1.2rem; }
+    .system-select, .system-start { min-width: 64px; height: 28px; font-size: 0.62rem; }
 }

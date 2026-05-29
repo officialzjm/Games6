@@ -180,7 +180,7 @@ class TouchControls {
     }
 
     show() {
-        if (this.container) this.container.style.display = 'flex';
+        if (this.container) this.container.style.display = 'grid';
     }
 
     hide() {

@@ -8,10 +8,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const debug = document.getElementById('debug');
     const romFile = document.getElementById('romFile');
     const systemSelect = document.getElementById('systemSelect');
-    const fullscreenBtn = document.getElementById('fullscreenBtn');
-    const exitFullscreenBtn = document.getElementById('exitFullscreenBtn');
-    const fullscreenHint = document.getElementById('fullscreenHint');
-    const dismissHintBtn = document.getElementById('dismissHint');
 
     // Core managers
     const emulator = new EmulatorManager(canvas, ctx, status, debug);
@@ -19,47 +15,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const controlSettings = new ControlSettings(inputHandler);
     const touchControls = new TouchControls(emulator, inputHandler);
 
-    // Expose for cross-module visibility (used by emulator.setSystem hook)
     emulator.touchControls = touchControls;
 
     // Initial canvas
     emulator.initCanvas('nes');
 
     // -----------------------------------------------------------
-    // Touch device & viewport detection
+    // Touch device detection
     // -----------------------------------------------------------
     const isTouchDevice = (window.matchMedia && window.matchMedia('(hover: none) and (pointer: coarse)').matches)
                          || ('ontouchstart' in window);
-    const isMobileViewport = () => window.innerWidth <= 768;
 
     function syncTouchOverlay() {
-        // Touch controls are ONLY shown in fullscreen-mode for NES.
-        // Outside fullscreen the screen is too small for thumb play anyway,
-        // and floating overlay buttons would block UI taps.
+        // Inline NES touch controls — shown only on touch devices with NES selected.
+        // No fullscreen requirement; they live below the game screen.
         if (!touchControls.container) return;
-        const fsMode = document.body.classList.contains('fullscreen-mode');
-        const shouldShow = isTouchDevice
-                          && emulator.currentSystem === 'nes'
-                          && fsMode;
+        const shouldShow = isTouchDevice && emulator.currentSystem === 'nes';
         if (shouldShow) touchControls.show();
         else touchControls.hide();
-
-        // Centered "▶ Play in Fullscreen" button on touch devices when a NES
-        // ROM is running but we're not in fullscreen.
-        syncPlayCTA();
     }
-
-    function syncPlayCTA() {
-        const cta = document.getElementById('playCta');
-        if (!cta) return;
-        const fsMode = document.body.classList.contains('fullscreen-mode');
-        const shouldShow = isTouchDevice
-                          && emulator.running
-                          && emulator.currentSystem === 'nes'
-                          && !fsMode;
-        cta.style.display = shouldShow ? 'flex' : 'none';
-    }
-    // Make it globally accessible so EmulatorManager.setSystem can call it
     window.__syncTouchOverlay = syncTouchOverlay;
 
     // -----------------------------------------------------------
@@ -92,11 +66,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             syncTouchOverlay();
-
-            // Nudge the user to fullscreen after first successful load (mobile only)
-            if (isTouchDevice && !localStorage.getItem('hintDismissed')) {
-                showHint();
-            }
         } catch (err) {
             emulator.log('ERROR: ' + err.message);
             status.textContent = 'Error: ' + err.message;
@@ -104,105 +73,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // -----------------------------------------------------------
-    // Fullscreen / "play mode"
-    // -----------------------------------------------------------
-    function enterPlayMode() {
-        document.body.classList.add('fullscreen-mode');
-        const el = document.documentElement;
-        const req = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen || el.msRequestFullscreen;
-        if (req) {
-            req.call(el).catch(() => { /* user gesture or browser blocked it — CSS mode still active */ });
-        }
-        syncTouchOverlay();
-        // Note: we intentionally do NOT lock orientation — let the user rotate freely.
-    }
-
-    function exitPlayMode() {
-        document.body.classList.remove('fullscreen-mode');
-        if (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement) {
-            const fn = document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen;
-            if (fn) fn.call(document).catch(() => {});
-        }
-        syncTouchOverlay();
-    }
-
-    function togglePlayMode() {
-        if (document.body.classList.contains('fullscreen-mode')) exitPlayMode();
-        else enterPlayMode();
-    }
-
-    fullscreenBtn.addEventListener('click', togglePlayMode);
-    exitFullscreenBtn.addEventListener('click', exitPlayMode);
-
-    // Centered "Play in Fullscreen" call-to-action (touch + NES)
-    const playCtaBtn = document.getElementById('playCtaBtn');
-    if (playCtaBtn) {
-        playCtaBtn.addEventListener('click', enterPlayMode);
-    }
-
-    // Keep our CSS class in sync if user exits via gesture / ESC
-    document.addEventListener('fullscreenchange', () => {
-        const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
-        if (isFs && emulator.currentSystem === 'gba') {
-            document.body.classList.add('fullscreen-mode');
-            syncTouchOverlay();
-        } else if (!isFs && document.body.classList.contains('fullscreen-mode')) {
-            // User escaped native fullscreen — stay in CSS play mode unless they tap exit
-            // (Most apps drop fullscreen entirely; we do too for clarity.)
-            document.body.classList.remove('fullscreen-mode');
-            syncTouchOverlay();
-        }
-    });
-
-    // ESC also exits play mode (handy on desktop)
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && document.body.classList.contains('fullscreen-mode')) {
-            exitPlayMode();
-        }
-    });
-
-    // -----------------------------------------------------------
-    // Fullscreen hint banner
-    // -----------------------------------------------------------
-    function showHint() {
-        if (!fullscreenHint) return;
-        if (localStorage.getItem('hintDismissed')) return;
-        fullscreenHint.style.display = 'flex';
-    }
-    function hideHint() {
-        if (fullscreenHint) fullscreenHint.style.display = 'none';
-    }
-    if (dismissHintBtn) {
-        dismissHintBtn.addEventListener('click', () => {
-            localStorage.setItem('hintDismissed', '1');
-            hideHint();
-        });
-    }
-
-    // Show hint on initial load for touch/mobile users
-    if ((isTouchDevice || isMobileViewport()) && !localStorage.getItem('hintDismissed')) {
-        showHint();
-    }
-
-    // -----------------------------------------------------------
-    // Viewport resize → re-sync touch overlay
-    // -----------------------------------------------------------
-    let resizeRaf = null;
-    window.addEventListener('resize', () => {
-        if (resizeRaf) cancelAnimationFrame(resizeRaf);
-        resizeRaf = requestAnimationFrame(syncTouchOverlay);
-    });
-
-    // -----------------------------------------------------------
-    // Canvas focus helper
-    // -----------------------------------------------------------
+    // Canvas focus helper for keyboard input
     canvas.setAttribute('tabindex', '0');
     canvas.addEventListener('keydown', (e) => e.preventDefault());
 
-    // -----------------------------------------------------------
     // file:// protocol warning
-    // -----------------------------------------------------------
     if (window.location.protocol === 'file:') {
         const warning = document.getElementById('fileProtocolWarning');
         if (warning) warning.style.display = 'block';
@@ -213,6 +88,6 @@ document.addEventListener('DOMContentLoaded', () => {
         emulator.log('Emulator ready');
     }
 
-    // Initial overlay sync
+    // Initial sync
     syncTouchOverlay();
 });
