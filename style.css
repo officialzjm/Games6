@@ -999,12 +999,14 @@ body.fullscreen-mode #game .ejs_player {
     border-radius: 0 !important;
 }
 
-/* Hide EmulatorJS UI chrome only when it is not managing the active GBA UI.
-   On mobile GBA, EmulatorJS owns the virtual gamepad and its controls must
-   remain clickable above the canvas. */
-body.fullscreen-mode:not(.system-gba) #game .ejs_menu_bar,
-body.fullscreen-mode:not(.system-gba) #game .ejs_top_bar,
-body.fullscreen-mode:not(.system-gba) #game .ejs_message {
+/* Hide EmulatorJS menu chrome in play mode. The translucent rounded bars on
+   mobile are the small-screen menu, and they can sit over the gamepad taps. */
+body.fullscreen-mode #game .ejs_menu_bar,
+body.fullscreen-mode #game .ejs_top_bar,
+body.fullscreen-mode #game .ejs_message,
+body.fullscreen-mode #game .ejs_settings_parent,
+body.fullscreen-mode #game .ejs_context_menu,
+body.fullscreen-mode #game .ejs_popup_container {
     display: none !important;
 }
 
@@ -1036,25 +1038,16 @@ body.fullscreen-mode.system-gba #game .ejs_virtualGamepad_left,
 body.fullscreen-mode.system-gba #game .ejs_virtualGamepad_right,
 body.fullscreen-mode.system-gba #game .ejs_virtualGamepad_button,
 body.fullscreen-mode.system-gba #game .ejs_dpad_main,
-body.fullscreen-mode.system-gba #game .ejs_menu_bar,
 body.fullscreen-mode.system-gba #game .ejs_virtualGamepad_open {
     z-index: 10020 !important;
     pointer-events: auto !important;
     touch-action: none;
 }
 
-body.fullscreen-mode .exit-fullscreen-btn {
+body.fullscreen-mode:not(.system-gba) .exit-fullscreen-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-}
-
-@media (hover: none), (pointer: coarse) {
-    body.fullscreen-mode.system-gba .exit-fullscreen-btn {
-        left: max(12px, env(safe-area-inset-left));
-        right: auto;
-        z-index: 10010;
-    }
 }
 
 /* When in fullscreen-mode on touch, push touch controls inset to avoid notches */

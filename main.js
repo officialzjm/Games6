@@ -36,6 +36,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function setBodySystemClass(system) {
         document.body.classList.toggle('system-nes', system === 'nes');
         document.body.classList.toggle('system-gba', system === 'gba');
+        if (fullscreenBtn) {
+            fullscreenBtn.style.display = system === 'gba' ? 'none' : '';
+        }
     }
 
     function syncTouchOverlay() {
@@ -151,7 +154,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // Keep our CSS class in sync if user exits via gesture / ESC
     document.addEventListener('fullscreenchange', () => {
         const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
-        if (!isFs && document.body.classList.contains('fullscreen-mode')) {
+        if (isFs && emulator.currentSystem === 'gba') {
+            document.body.classList.add('fullscreen-mode');
+            syncTouchOverlay();
+        } else if (!isFs && document.body.classList.contains('fullscreen-mode')) {
             // User escaped native fullscreen — stay in CSS play mode unless they tap exit
             // (Most apps drop fullscreen entirely; we do too for clarity.)
             document.body.classList.remove('fullscreen-mode');
