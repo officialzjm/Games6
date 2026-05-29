@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initial canvas
     emulator.initCanvas('nes');
+    setBodySystemClass(emulator.currentSystem);
 
     // -----------------------------------------------------------
     // Touch device & viewport detection
@@ -31,6 +32,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const isTouchDevice = (window.matchMedia && window.matchMedia('(hover: none) and (pointer: coarse)').matches)
                          || ('ontouchstart' in window);
     const isMobileViewport = () => window.innerWidth <= 768;
+
+    function setBodySystemClass(system) {
+        document.body.classList.toggle('system-nes', system === 'nes');
+        document.body.classList.toggle('system-gba', system === 'gba');
+    }
 
     function syncTouchOverlay() {
         // Touch controls are ONLY shown in fullscreen-mode for NES.
@@ -67,6 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // -----------------------------------------------------------
     systemSelect.addEventListener('change', (e) => {
         const system = e.target.value;
+        setBodySystemClass(system);
         emulator.setSystem(system);
         status.textContent = `System: ${systemSelect.options[systemSelect.selectedIndex].text} - Load a ROM file`;
         syncTouchOverlay();

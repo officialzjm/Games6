@@ -999,11 +999,12 @@ body.fullscreen-mode #game .ejs_player {
     border-radius: 0 !important;
 }
 
-/* Hide EmulatorJS UI chrome in fullscreen so the game fills the whole screen.
-   EmulatorJS's menu is still reachable by tapping the canvas. */
-body.fullscreen-mode #game .ejs_menu_bar,
-body.fullscreen-mode #game .ejs_top_bar,
-body.fullscreen-mode #game .ejs_message {
+/* Hide EmulatorJS UI chrome only when it is not managing the active GBA UI.
+   On mobile GBA, EmulatorJS owns the virtual gamepad and its controls must
+   remain clickable above the canvas. */
+body.fullscreen-mode:not(.system-gba) #game .ejs_menu_bar,
+body.fullscreen-mode:not(.system-gba) #game .ejs_top_bar,
+body.fullscreen-mode:not(.system-gba) #game .ejs_message {
     display: none !important;
 }
 
@@ -1016,10 +1017,44 @@ body.fullscreen-mode #game canvas {
     background: #000 !important;
 }
 
+body.fullscreen-mode.system-gba #game .ejs_parent,
+body.fullscreen-mode.system-gba #game .ejs_game,
+body.fullscreen-mode.system-gba #game .ejs_canvas_parent {
+    position: relative;
+    touch-action: none;
+}
+
+body.fullscreen-mode.system-gba #game .ejs_canvas_parent,
+body.fullscreen-mode.system-gba #game canvas {
+    z-index: 1;
+}
+
+body.fullscreen-mode.system-gba #game .ejs_virtualGamepad_parent,
+body.fullscreen-mode.system-gba #game .ejs_virtualGamepad_top,
+body.fullscreen-mode.system-gba #game .ejs_virtualGamepad_bottom,
+body.fullscreen-mode.system-gba #game .ejs_virtualGamepad_left,
+body.fullscreen-mode.system-gba #game .ejs_virtualGamepad_right,
+body.fullscreen-mode.system-gba #game .ejs_virtualGamepad_button,
+body.fullscreen-mode.system-gba #game .ejs_dpad_main,
+body.fullscreen-mode.system-gba #game .ejs_menu_bar,
+body.fullscreen-mode.system-gba #game .ejs_virtualGamepad_open {
+    z-index: 10020 !important;
+    pointer-events: auto !important;
+    touch-action: none;
+}
+
 body.fullscreen-mode .exit-fullscreen-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
+}
+
+@media (hover: none), (pointer: coarse) {
+    body.fullscreen-mode.system-gba .exit-fullscreen-btn {
+        left: max(12px, env(safe-area-inset-left));
+        right: auto;
+        z-index: 10010;
+    }
 }
 
 /* When in fullscreen-mode on touch, push touch controls inset to avoid notches */
