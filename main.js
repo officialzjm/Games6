@@ -8,6 +8,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const debug = document.getElementById('debug');
     const romFile = document.getElementById('romFile');
     const systemSelect = document.getElementById('systemSelect');
+    const gbaEngineGroup = document.getElementById('gbaEngineGroup');
+    const gbaEngineSelect = document.getElementById('gbaEngineSelect');
 
     // Core managers
     const emulator = new EmulatorManager(canvas, ctx, status, debug);
@@ -32,6 +34,9 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.classList.toggle('is-gba', system === 'gba');
         document.body.classList.toggle('system-nes', system === 'nes');
         document.body.classList.toggle('system-gba', system === 'gba');
+        if (gbaEngineGroup) {
+            gbaEngineGroup.style.display = system === 'gba' ? 'block' : 'none';
+        }
     }
 
     function syncTouchOverlay() {
@@ -48,12 +53,40 @@ document.addEventListener('DOMContentLoaded', () => {
     // -----------------------------------------------------------
     // System selection
     // -----------------------------------------------------------
-    systemSelect.addEventListener('change', (e) => {
+    systemSelect.addEventListener('change', async (e) => {
         const system = e.target.value;
         emulator.setSystem(system);
         status.textContent = `System: ${systemSelect.options[systemSelect.selectedIndex].text} - Load a ROM file`;
+        if (system === 'gba' && gbaEngineSelect && gbaEngineSelect.value === 'iodine') {
+            emulator.setGBAEngine('iodine');
+            emulator.loadGBA();
+        }
         syncTouchOverlay();
     });
+
+    if (gbaEngineSelect) {
+        gbaEngineSelect.addEventListener('change', async (e) => {
+            emulator.setGBAEngine(e.target.value);
+            if (emulator.currentSystem !== 'gba') return;
+
+            const file = romFile.files && romFile.files[0];
+            if (emulator.gbaEngine === 'iodine' || file) {
+                status.textContent = 'Switching GBA engine...';
+                try {
+                    emulator.stop();
+                    await emulator.loadGBA(file);
+                } catch (err) {
+                    emulator.log('ERROR: ' + err.message);
+                    status.textContent = 'Error: ' + err.message;
+                    console.error(err);
+                }
+            } else {
+                emulator.setSystem('gba');
+                status.textContent = 'GBA engine changed - load a ROM file';
+            }
+            syncTouchOverlay();
+        });
+    }
 
     // -----------------------------------------------------------
     // ROM loader

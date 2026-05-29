@@ -15,6 +15,7 @@ class EmulatorManager {
         // GBA / EmulatorJS state
         this.gbaActive = false;
         this.gbaBlobUrl = null;
+        this.gbaEngine = 'emulatorjs';
     }
 
     log(msg) {
@@ -139,9 +140,23 @@ class EmulatorManager {
     }
 
     // ---------------------------------------------------------------
-    // GBA via EmulatorJS (mGBA WASM core, loaded from CDN)
+    // GBA via selectable engines. EmulatorJS/mGBA stays the default because it
+    // supports loading the user's local ROM directly from our file input.
     // ---------------------------------------------------------------
+    setGBAEngine(engine) {
+        this.gbaEngine = engine === 'iodine' ? 'iodine' : 'emulatorjs';
+    }
+
     async loadGBA(file) {
+        if (this.gbaEngine === 'iodine') {
+            this.loadIodineGBA();
+            return;
+        }
+
+        await this.loadEmulatorJSGBA(file);
+    }
+
+    async loadEmulatorJSGBA(file) {
         this.log('Loading GBA ROM via EmulatorJS (mGBA core)...');
         this.status.textContent = 'Loading GBA emulator...';
 
@@ -150,6 +165,7 @@ class EmulatorManager {
         const gameContainer = document.getElementById('game-container');
         const gameMount = document.getElementById('game');
         gameContainer.style.display = 'flex';
+        gameMount.classList.remove('gba-alt-active');
 
         // Fully reset the mount so re-loading a ROM gives a clean instance
         gameMount.innerHTML = '';
@@ -226,6 +242,57 @@ class EmulatorManager {
         this.log('EmulatorJS booting — first run downloads the WASM core (~few MB).');
     }
 
+    loadIodineGBA() {
+        this.log('Loading IodineGBA standalone fallback...');
+        this.status.textContent = 'Loading IodineGBA standalone...';
+
+        this.canvas.style.display = 'none';
+        const gameContainer = document.getElementById('game-container');
+        const gameMount = document.getElementById('game');
+        gameContainer.style.display = 'flex';
+        gameMount.classList.add('gba-alt-active');
+        gameMount.innerHTML = '';
+
+        if (this.gbaBlobUrl) {
+            try { URL.revokeObjectURL(this.gbaBlobUrl); } catch (e) {}
+            this.gbaBlobUrl = null;
+        }
+
+        if (window.EJS_emulator) {
+            try {
+                if (typeof window.EJS_emulator.destroy === 'function') {
+                    window.EJS_emulator.destroy();
+                } else if (window.EJS_emulator.elements &&
+                           window.EJS_emulator.elements.parent) {
+                    window.EJS_emulator.elements.parent.remove();
+                }
+            } catch (e) {
+                console.log('Could not destroy EJS instance:', e);
+            }
+            window.EJS_emulator = null;
+        }
+
+        const iframe = document.createElement('iframe');
+        iframe.className = 'gba-alt-frame';
+        iframe.title = 'IodineGBA standalone emulator';
+        iframe.src = 'https://taisel.github.io/IodineGBA/';
+        iframe.loading = 'lazy';
+        iframe.allow = 'fullscreen; autoplay';
+        iframe.referrerPolicy = 'no-referrer';
+
+        const note = document.createElement('p');
+        note.className = 'gba-alt-note';
+        note.textContent = 'IodineGBA is a standalone fallback. Use File > Game inside this frame to choose your ROM.';
+
+        gameMount.appendChild(iframe);
+        gameMount.appendChild(note);
+
+        this.gbaActive = true;
+        this.running = true;
+        this.status.textContent = 'IodineGBA standalone loaded - use its in-frame Game file picker';
+        this.log('IodineGBA standalone iframe loaded. Local ROM files cannot be passed into a cross-origin iframe.');
+    }
+
     _ensureEmulatorJsLoader() {
         return new Promise((resolve, reject) => {
             // Re-trigger loader each time (loader.js is idempotent and re-reads EJS_* globals)
@@ -274,6 +341,7 @@ class EmulatorManager {
             }
             const gameMount = document.getElementById('game');
             if (gameMount) gameMount.innerHTML = '';
+            if (gameMount) gameMount.classList.remove('gba-alt-active');
             if (this.gbaBlobUrl) {
                 try { URL.revokeObjectURL(this.gbaBlobUrl); } catch (e) {}
                 this.gbaBlobUrl = null;
@@ -293,11 +361,13 @@ class EmulatorManager {
             this.canvas.style.display = 'block';
             gameContainer.style.display = 'none';
             if (gameMount) gameMount.innerHTML = '';
+            if (gameMount) gameMount.classList.remove('gba-alt-active');
             this.initCanvas('nes');
         } else if (system === 'gba') {
             this.canvas.style.display = 'none';
             gameContainer.style.display = 'flex';
             if (gameMount) gameMount.innerHTML = '';
+            if (gameMount) gameMount.classList.remove('gba-alt-active');
         }
 
         // Notify main.js to re-evaluate touch-overlay visibility

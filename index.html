@@ -41,6 +41,15 @@
                     <label for="romFile">ROM File</label>
                     <input type="file" id="romFile" accept=".nes,.gba">
                 </div>
+                <div class="field-group field-grow gba-engine-group" id="gbaEngineGroup" style="display:none;">
+                    <label for="gbaEngineSelect">GBA Engine</label>
+                    <div class="select-wrap">
+                        <select id="gbaEngineSelect">
+                            <option value="emulatorjs">EmulatorJS / mGBA (Recommended)</option>
+                            <option value="iodine">IodineGBA Standalone</option>
+                        </select>
+                    </div>
+                </div>
                 <div class="field-group action-group">
                     <label>&nbsp;</label>
                     <div class="action-buttons">
@@ -97,7 +106,7 @@
         <section class="info-grid">
             <div class="info panel">
                 <strong>Supported Systems</strong>
-                <p>NES runs on jsNES. GBA runs on EmulatorJS (mGBA core) &mdash; loaded on demand from CDN the first time you pick a GBA ROM. For fullscreen, use your browser's built-in fullscreen, or for GBA tap the &#9974; icon inside the EmulatorJS menu.</p>
+                <p>NES runs on jsNES. GBA defaults to EmulatorJS (mGBA core). You can also switch to the standalone IodineGBA library from the GBA Engine selector.</p>
             </div>
             <div class="info panel">
                 <strong>Controls</strong>
@@ -108,7 +117,7 @@
                     </div>
                     <div class="control-summary-item">
                         <span class="system-chip">GBA</span>
-                        <p>EmulatorJS handles its own input &mdash; tap the gamepad icon in the EmulatorJS menu bar for touch controls, or configure key mappings from its gear icon.</p>
+                        <p>EmulatorJS handles its own input and touch controls. IodineGBA is a fallback standalone player, so use its in-frame Game file picker.</p>
                     </div>
                 </div>
             </div>
