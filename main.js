@@ -205,7 +205,9 @@ document.addEventListener('DOMContentLoaded', () => {
         for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
     
             try {
-    
+                systemSelect.value = "gba";
+                emulator.setSystem("gba");
+
                 status.textContent =
                     attempt === 1
                         ? `Loading ${gameName}...`
@@ -226,9 +228,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
                 emulator.stop();
     
-                emulator.setSystem("gba");
-                syncSystemClass();
-                syncTouchOverlay();
                 await emulator.loadGBA(file);
     
                 status.textContent = `Playing ${gameName}`;
