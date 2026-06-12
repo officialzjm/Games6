@@ -172,29 +172,44 @@ document.addEventListener('DOMContentLoaded', () => {
         emulator.log('Emulator ready');
     }
     // Auto-load ROM from URL
-// Auto-load ROM from URL
-    (async () => {
-        const params = new URLSearchParams(window.location.search);
+    const games = [
+        "Pokemon Emerald",
+        "Pokemon Fire Red",
+        "Pokemon Leaf Green"
+    ];
     
-        const romUrl = params.get("rom");
-        const system = params.get("system");
+    const gameList = document.getElementById("gameList");
+    const launcher = document.getElementById("gameLauncher");
+    const screen = document.getElementById("screen");
     
-        if (!romUrl) return;
+    function gameToFilename(name) {
+        return name
+            .toLowerCase()
+            .replace(/[^a-z0-9]/g, "")
+            + ".gba";
+    }
+    
+    async function loadSelectedGame(gameName) {
+    
+        launcher.style.display = "none";
+        screen.style.display = "block";
+    
+        const romFileName = gameToFilename(gameName);
+    
+        // Change this to wherever your ROMs live
+        const romUrl = `roms/${romFileName}`;
     
         const MAX_RETRIES = 5;
-        const RETRY_DELAY = 5000; // 5 seconds
+        const RETRY_DELAY = 5000;
     
         for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+    
             try {
-                if (system) {
-                    systemSelect.value = system;
-                    emulator.setSystem(system);
-                }
     
                 status.textContent =
                     attempt === 1
-                        ? "Downloading ROM..."
-                        : `Retrying ROM download (${attempt}/${MAX_RETRIES})...`;
+                        ? `Loading ${gameName}...`
+                        : `Retry ${attempt}/${MAX_RETRIES}...`;
     
                 const response = await fetch(romUrl);
     
@@ -204,36 +219,51 @@ document.addEventListener('DOMContentLoaded', () => {
     
                 const blob = await response.blob();
     
-                const fileName = romUrl.split("/").pop() || "game.gba";
-                const file = new File([blob], fileName);
+                const file = new File(
+                    [blob],
+                    romFileName
+                );
     
                 emulator.stop();
     
-                if (system === "nes") {
-                    await emulator.loadNES(file);
-                } else {
-                    await emulator.loadGBA(file);
-                }
+                emulator.setSystem("gba");
     
-                status.textContent = `Playing: ${fileName}`;
-                return; // Success, exit retry loop
+                await emulator.loadGBA(file);
+    
+                status.textContent = `Playing ${gameName}`;
+    
+                return;
+    
             } catch (err) {
-                console.error(`Attempt ${attempt} failed:`, err);
+    
+                console.error(err);
     
                 if (attempt === MAX_RETRIES) {
-                    status.textContent = "Failed to load ROM";
+                    status.textContent =
+                        `Failed to load ${gameName}`;
                     return;
                 }
-    
-                status.textContent =
-                    `Load failed. Retrying in 5 seconds... (${attempt}/${MAX_RETRIES})`;
     
                 await new Promise(resolve =>
                     setTimeout(resolve, RETRY_DELAY)
                 );
             }
         }
-    })();
+    }
+    
+    games.forEach(game => {
+    
+        const entry = document.createElement("div");
+    
+        entry.className = "game-entry";
+        entry.textContent = game;
+    
+        entry.addEventListener("click", () => {
+            loadSelectedGame(game);
+        });
+    
+        gameList.appendChild(entry);
+    });
     // Initial sync
     syncSystemClass();
     syncTouchOverlay();
