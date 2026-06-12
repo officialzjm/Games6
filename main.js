@@ -96,6 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // -----------------------------------------------------------
     // ROM loader
     // -----------------------------------------------------------
+    /*
     romFile.addEventListener('change', async (e) => {
         const file = e.target.files[0];
         if (!file) return;
@@ -119,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error(err);
         }
     });
-
+    */
     // Canvas focus helper for keyboard input
     canvas.setAttribute('tabindex', '0');
     canvas.addEventListener('keydown', (e) => e.preventDefault());
@@ -134,7 +135,43 @@ document.addEventListener('DOMContentLoaded', () => {
         status.textContent = 'Ready! Select a system and load a ROM file.';
         emulator.log('Emulator ready');
     }
+    // Auto-load ROM from URL
+    (async () => {
+        const params = new URLSearchParams(window.location.search);
 
+        const romUrl = params.get("rom");
+        const system = params.get("system");
+
+        if (!romUrl) return;
+
+        try {
+            if (system) {
+                systemSelect.value = system;
+                emulator.setSystem(system);
+            }
+
+            status.textContent = "Downloading ROM...";
+
+            const response = await fetch(romUrl);
+            const blob = await response.blob();
+
+            const fileName = romUrl.split("/").pop() || "game.gba";
+            const file = new File([blob], fileName);
+
+            emulator.stop();
+
+            if (system === "nes") {
+                await emulator.loadNES(file);
+            } else {
+                await emulator.loadGBA(file);
+            }
+
+            status.textContent = `Playing: ${fileName}`;
+        } catch (err) {
+            console.error(err);
+            status.textContent = "Failed to load ROM";
+        }
+    })();
     // Initial sync
     syncSystemClass();
     syncTouchOverlay();
