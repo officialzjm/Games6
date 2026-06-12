@@ -228,8 +228,12 @@ document.addEventListener('DOMContentLoaded', () => {
     
                 emulator.stop();
     
-                await emulator.loadGBA(file);
-    
+                //await emulator.loadGBA(file);
+                console.log("ROM fetched successfully");
+                console.log("Size:", blob.size);
+                console.log(romUrl);
+                return;
+                
                 status.textContent = `Playing ${gameName}`;
     
                 return;
