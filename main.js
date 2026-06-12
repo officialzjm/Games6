@@ -123,6 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     */
+    /* Never tested these functions, just noticed the downlaod feature hidden in settings :cry:
     async function exportState() {
         const romUrl = params.get("rom");
         const fileName = romUrl.split("/").pop() || "game.gba";
@@ -155,6 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
         alert("State imported");
     }
+    */
     // Canvas focus helper for keyboard input
     canvas.setAttribute('tabindex', '0');
     canvas.addEventListener('keydown', (e) => e.preventDefault());
