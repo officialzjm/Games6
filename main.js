@@ -264,9 +264,13 @@ document.addEventListener('DOMContentLoaded', () => {
     
         alert("Fetch finished");
     
-        const blob = await response.blob();
-    
-        alert("Blob size: " + blob.size);
+        //const blob = await response.blob();
+        const buffer = await response.arrayBuffer();
+        
+        alert(buffer.byteLength);
+        
+        return;
+        //alert("Blob size: " + blob.size);
     
         // ONLY NOW show emulator UI
         launcher.style.display = "none";
