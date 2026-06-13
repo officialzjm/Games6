@@ -209,14 +209,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (!response.ok) {
                     throw new Error(`HTTP ${response.status}`);
                 }
-    
+                console.log(1);
                 const blob = await response.blob();
-    
+                console.log(2);
+                console.log("ROM bytes:", blob.size);
+                console.log(5);
                 const fileName = romUrl.split("/").pop() || "game.gba";
                 const file = new File([blob], fileName);
-    
+                console.log(3);
                 emulator.stop();
-    
+                console.log(4);
                 if (system === "nes") {
                     await emulator.loadNES(file);
                 } else {
@@ -285,7 +287,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
         const MAX_RETRIES = 5;
         const RETRY_DELAY = 5000; // 5 seconds
-        console.log("test22");
+        console.log("test3");
         for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
             try {
                 if (system) {
