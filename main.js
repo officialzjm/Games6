@@ -58,7 +58,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // -----------------------------------------------------------
     // System selection
     // -----------------------------------------------------------
-    /*
     systemSelect.addEventListener('change', async (e) => {
         const system = e.target.value;
         emulator.setSystem(system);
@@ -69,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         syncTouchOverlay();
     });
-    
+    /*
     if (gbaEngineSelect) {
         gbaEngineSelect.addEventListener('change', async (e) => {
             emulator.setGBAEngine(e.target.value);
@@ -293,7 +292,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
         const MAX_RETRIES = 5;
         const RETRY_DELAY = 5000; // 5 seconds
-        console.log("startede");
+        console.log("startedeee");
         for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
             try {
                 if (system) {
