@@ -213,6 +213,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 console.log(response.headers.get("content-type"));
                 console.log(response.headers.get("content-length"));
+                console.log(response);
                 console.log(1);
                 const blob = await response.blob();
                 console.log(2);
@@ -291,7 +292,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
         const MAX_RETRIES = 5;
         const RETRY_DELAY = 5000; // 5 seconds
-        console.log("test4");
+        console.log("test40");
         for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
             try {
                 if (system) {
