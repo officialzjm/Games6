@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log('Invalid response');
             throw new Error(`HTTP ${response.status}`);
         }
-
+        console.log(response.bodyUsed);
         const blob = await response.blob();
         console.log('Blob');
         const fileName = romUrl.split("/").pop() || "game.gba";
