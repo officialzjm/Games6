@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const response = await fetch(romUrl);
 
         if (!response.ok) {
-            console.log('Invalid response);
+            console.log('Invalid response');
             throw new Error(`HTTP ${response.status}`);
         }
 
