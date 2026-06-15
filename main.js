@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ROM loader
     // -----------------------------------------------------------
     
-    function loadRom(romUrl);
+    function loadRom(romUrl) {
         console.log('loadRom called');
         const response = await fetch(romUrl);
 
@@ -140,7 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
             status.textContent = 'Error: ' + err.message;
             console.error(err);
         }
-    });
+    }
     
     // Canvas focus helper for keyboard input
     canvas.setAttribute('tabindex', '0');
@@ -195,6 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
             entry.addEventListener("click", () => {
                 pickerDropdown.classList.remove("open");
+                changeSystem(game.rom.split('.').pop());
                 loadRom(game.rom);
             });
     
@@ -207,7 +208,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     renderGames();
-    console.log('Games5 Test1');
+    console.log('Games5 Test2');
     // Initial sync
     syncSystemClass();
     syncTouchOverlay();
