@@ -106,20 +106,22 @@ document.addEventListener('DOMContentLoaded', () => {
     // -----------------------------------------------------------
     
     function loadRom(romUrl);
-    
+        console.log('loadRom called');
         const response = await fetch(romUrl);
 
         if (!response.ok) {
+            console.log('Invalid response);
             throw new Error(`HTTP ${response.status}`);
         }
 
         const blob = await response.blob();
-
+        console.log('Blob');
         const fileName = romUrl.split("/").pop() || "game.gba";
+        console.log(`Loading rom: '${fileName}'`);
         const file = new File([blob], fileName);
-
+        
         if (!file) return;
-
+        console.log('File found');
         status.textContent = 'Loading ROM...';
         emulator.log('Reading ROM file...');
 
@@ -205,7 +207,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     renderGames();
-    
+    console.log('Games5 Test1');
     // Initial sync
     syncSystemClass();
     syncTouchOverlay();
