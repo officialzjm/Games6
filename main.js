@@ -106,6 +106,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // -----------------------------------------------------------
     
     async function loadRom(romUrl) {
+        console.count("loadRom");
+        console.trace("loadRom");
         console.log('loadRom called');
         const response = await fetch(romUrl);
 
@@ -198,7 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
             entry.addEventListener("click", () => {
                 pickerDropdown.classList.remove("open");
                 changeSystem(game.rom.split('.').pop());
-                await loadRom(game.rom);
+                loadRom(game.rom);
             });
     
             gameList.appendChild(entry);
@@ -210,7 +212,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     renderGames();
-    console.log('Games5 Test6');
+    console.log('Games5 Test7');
     // Initial sync
     syncSystemClass();
     syncTouchOverlay();
