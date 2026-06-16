@@ -55,6 +55,21 @@
                         </select>
                     </div>
                 </div>
+                <div class="game-picker">
+                    <button id="gamePickerBtn" class="game-picker-btn">
+                        Select Game ▼
+                    </button>
+                
+                    <div id="gamePickerDropdown" class="game-picker-dropdown">
+                        <input
+                            id="gameSearch"
+                            type="text"
+                            placeholder="Search games..."
+                        >
+                
+                        <div id="gameList"></div>
+                    </div>
+                </div>
                 <div class="field-group action-group">
                     <label>&nbsp;</label>
                     <div class="action-buttons">
@@ -71,30 +86,6 @@
                 <div>
                     <p class="eyebrow">Display</p>
                     <h2>Game Screen</h2>
-                </div>
-                <span id="stageBadge" class="stage-badge">Local Runtime</span>
-                <div class="field-group action-group">
-                    <label>&nbsp;</label>
-                    <div class="action-buttons">
-                        <button id="controlSettingsBtn" class="icon-btn" title="Configure controls" aria-label="Configure controls">
-                            <span aria-hidden="true">&#9881;</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="game-picker">
-                <button id="gamePickerBtn" class="game-picker-btn">
-                    Select Game ▼
-                </button>
-            
-                <div id="gamePickerDropdown" class="game-picker-dropdown">
-                    <input
-                        id="gameSearch"
-                        type="text"
-                        placeholder="Search games..."
-                    >
-            
-                    <div id="gameList"></div>
                 </div>
             </div>
             <div id="screen">
