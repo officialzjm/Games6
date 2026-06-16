@@ -12,10 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const gbaEngineSelect = document.getElementById('gbaEngineSelect');
     const gbaSaveHint = document.getElementById('gbaSaveHint');
 
-    const pickerBtn = document.getElementById("gamePickerBtn");
-    const pickerDropdown = document.getElementById("gamePickerDropdown");
-    const searchBox = document.getElementById("gameSearch");
-    const gameList = document.getElementById("gameList");
     // Core managers
     const emulator = new EmulatorManager(canvas, ctx, status, debug);
     const inputHandler = new InputHandler(emulator);
@@ -62,20 +58,18 @@ document.addEventListener('DOMContentLoaded', () => {
     // -----------------------------------------------------------
     // System selection
     // -----------------------------------------------------------
-    function changeSystem(system) {
-        console.log('Changing system');
-        systemSelect.value = system;
+    /*
+    systemSelect.addEventListener('change', async (e) => {
+        const system = e.target.value;
         emulator.setSystem(system);
-        console.log(system);
         status.textContent = `System: ${systemSelect.options[systemSelect.selectedIndex].text} - Load a ROM file`;
         if (system === 'gba' && gbaEngineSelect && gbaEngineSelect.value === 'iodine') {
             emulator.setGBAEngine('iodine');
             emulator.loadGBA();
         }
         syncTouchOverlay();
-        console.log('System change complete');
-    }
-    /*
+    });
+    
     if (gbaEngineSelect) {
         gbaEngineSelect.addEventListener('change', async (e) => {
             emulator.setGBAEngine(e.target.value);
@@ -104,30 +98,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // -----------------------------------------------------------
     // ROM loader
     // -----------------------------------------------------------
-    
-    async function loadRom(romUrl) {
-        console.count("loadRom");
-        console.trace("loadRom");
-        console.log('loadRom called');
-        const response = await fetch(romUrl);
-
-        if (!response.ok) {
-            console.log('Invalid response');
-            throw new Error(`HTTP ${response.status}`);
-        }
-
-        
-        const blob = await response.blob();
-        console.log('Blob');
-        const fileName = romUrl.split("/").pop() || "game.gba";
-        console.log(`Loading rom: '${fileName}'`);
-        const file = new File([blob], fileName);
-        
+    /*
+    romFile.addEventListener('change', async (e) => {
+        const file = e.target.files[0];
         if (!file) return;
-        console.log('File found');
+
         status.textContent = 'Loading ROM...';
         emulator.log('Reading ROM file...');
-        return;
+
         try {
             emulator.stop();
 
@@ -143,8 +121,42 @@ document.addEventListener('DOMContentLoaded', () => {
             status.textContent = 'Error: ' + err.message;
             console.error(err);
         }
-    }
+    });
+    */
+    /* Never tested these functions, just noticed the downlaod feature hidden in settings :cry:
+    async function exportState() {
+        const romUrl = params.get("rom");
+        const fileName = romUrl.split("/").pop() || "game.gba";
+        
+        const state = await window.EJS_emulator.storage.states.get(fileName);
     
+        const blob = new Blob([state], {
+            type: "application/octet-stream"
+        });
+    
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = key;
+        a.click();
+    
+        URL.revokeObjectURL(a.href);
+    }
+    async function importState(file) {
+        const romUrl = params.get("rom");
+        const fileName = romUrl.split("/").pop() || "game.gba";
+        
+        const state = await window.EJS_emulator.storage.states.get(fileName);
+    
+        const data = new Uint8Array(await file.arrayBuffer());
+    
+        await window.EJS_emulator.storage.states.put(
+            fileName,
+            data
+        );
+    
+        alert("State imported");
+    }
+    */
     // Canvas focus helper for keyboard input
     canvas.setAttribute('tabindex', '0');
     canvas.addEventListener('keydown', (e) => e.preventDefault());
@@ -159,60 +171,71 @@ document.addEventListener('DOMContentLoaded', () => {
         status.textContent = 'Ready! Select a system and load a ROM file.';
         emulator.log('Emulator ready');
     }
-   
-    const games = [
-        {
-            name: "Pokemon Emerald",
-            rom: "roms/pokemonemerald.gba"
-        },
-        {
-            name: "Pokemon Fire Red",
-            rom: "roms/pokemonred.gba"
-        },
-        {
-            name: "Pokemon Leaf Green",
-            rom: "roms/pokemongreen.gba"
+    // Auto-load ROM from URL
+// Auto-load ROM from URL
+    (async () => {
+        const params = new URLSearchParams(window.location.search);
+    
+        const romUrl = params.get("rom");
+        const system = params.get("system");
+    
+        if (!romUrl) return;
+    
+        const MAX_RETRIES = 5;
+        const RETRY_DELAY = 5000; // 5 seconds
+    
+        for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+            try {
+                if (system) {
+                    systemSelect.value = system;
+                    emulator.setSystem(system);
+                }
+    
+                status.textContent =
+                    attempt === 1
+                        ? "Downloading ROM..."
+                        : `Retrying ROM download (${attempt}/${MAX_RETRIES})...`;
+    
+                const response = await fetch(romUrl);
+    
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+    
+                const blob = await response.blob();
+    
+                const fileName = romUrl.split("/").pop() || "game.gba";
+                const file = new File([blob], fileName);
+    
+                emulator.stop();
+    
+                if (system === "nes") {
+                    await emulator.loadNES(file);
+                } else {
+                    await emulator.loadGBA(file);
+                }
+    
+                status.textContent = `Playing: ${fileName}`;
+                return; // Success, exit retry loop
+            } catch (err) {
+                console.error(`Attempt ${attempt} failed:`, err);
+    
+                if (attempt === MAX_RETRIES) {
+                    status.textContent = "Failed to load ROM";
+                    return;
+                }
+    
+                status.textContent =
+                    `Load failed. Retrying in 5 seconds... (${attempt}/${MAX_RETRIES})`;
+    
+                await new Promise(resolve =>
+                    setTimeout(resolve, RETRY_DELAY)
+                );
+            }
         }
-    ];
-    
-    pickerBtn.addEventListener("click", () => {
-        pickerDropdown.classList.toggle("open");
-    });
-    
-    function renderGames(filter = "") {
-    
-        gameList.innerHTML = "";
-    
-        const filtered = games.filter(game =>
-            game.name.toLowerCase().includes(
-                filter.toLowerCase()
-            )
-        );
-    
-        filtered.forEach(game => {
-    
-            const entry = document.createElement("div");
-    
-            entry.className = "game-entry";
-            entry.textContent = game.name;
-    
-            entry.addEventListener("click", () => {
-                pickerDropdown.classList.remove("open");
-                changeSystem(game.rom.split('.').pop());
-                loadRom(game.rom);
-            });
-    
-            gameList.appendChild(entry);
-        });
-    }
-    
-    searchBox.addEventListener("input", () => {
-        renderGames(searchBox.value);
-    });
-
-    renderGames();
-    console.log('Games5 Test8');
+    })();
     // Initial sync
+    console.log(23);
     syncSystemClass();
     syncTouchOverlay();
 });
