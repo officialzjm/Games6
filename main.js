@@ -234,8 +234,56 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     })();
-    // Initial sync
-    console.log(23);
+    const games = [
+        {
+            name: "Pokemon Emerald",
+            rom: "roms/pokemonemerald.gba"
+        },
+        {
+            name: "Pokemon Fire Red",
+            rom: "roms/pokemonred.gba"
+        },
+        {
+            name: "Pokemon Leaf Green",
+            rom: "roms/pokemongreen.gba"
+        }
+    ];
+    
+    pickerBtn.addEventListener("click", () => {
+        pickerDropdown.classList.toggle("open");
+    });
+    
+    function renderGames(filter = "") {
+    
+        gameList.innerHTML = "";
+    
+        const filtered = games.filter(game =>
+            game.name.toLowerCase().includes(
+                filter.toLowerCase()
+            )
+        );
+    
+        filtered.forEach(game => {
+    
+            const entry = document.createElement("div");
+    
+            entry.className = "game-entry";
+            entry.textContent = game.name;
+    
+            entry.addEventListener("click", () => {
+                pickerDropdown.classList.remove("open");
+            });
+    
+            gameList.appendChild(entry);
+        });
+    }
+    
+    searchBox.addEventListener("input", () => {
+        renderGames(searchBox.value);
+    });
+
+    renderGames();
+    console.log(25);
     syncSystemClass();
     syncTouchOverlay();
 });
